@@ -68,6 +68,91 @@ function useTypewriter(phrases, { typeSpeed = 70, deleteSpeed = 40, pauseAfterTy
   return displayed;
 }
 
+// ─── Hook Number Counter (Animasi Angka) ───────────────────────────────────
+function useNumberCounter(endValue, duration = 2000) {
+  const [count, setCount] = useState(0);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    let observer;
+    const target = parseInt(endValue.toString().replace(/\D/g, "")) || 0;
+
+    if (target === 0) {
+      setCount(endValue);
+      return;
+    }
+
+    if (typeof window !== "undefined" && "IntersectionObserver" in window) {
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+              if (!startTimestamp) startTimestamp = timestamp;
+              const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+              // easeOutQuart
+              const easeProgress = 1 - Math.pow(1 - progress, 4);
+              setCount(Math.floor(easeProgress * target));
+              if (progress < 1) {
+                window.requestAnimationFrame(step);
+              }
+            };
+            window.requestAnimationFrame(step);
+            observer.disconnect();
+          }
+        },
+        { threshold: 0.1 }
+      );
+
+      if (ref.current) {
+        observer.observe(ref.current);
+      }
+    }
+    return () => observer?.disconnect();
+  }, [endValue, duration]);
+
+  const suffix = endValue.toString().replace(/[0-9.]/g, "");
+  return {
+    count: typeof count === "number" ? count.toLocaleString("id-ID") : count,
+    suffix,
+    ref,
+  };
+}
+
+// ─── Hook Mouse Parallax (Efek Mengambang) ─────────────────────────────────
+function useMouseParallax(multiplier = 1) {
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      const x = ((window.innerWidth / 2) - e.clientX) / 50 * multiplier;
+      const y = ((window.innerHeight / 2) - e.clientY) / 50 * multiplier;
+      setOffset({ x, y });
+    };
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [multiplier]);
+  
+  return offset;
+}
+
+// ─── Komponen Stat Item (Angka Animasi) ────────────────────────────────────
+function StatItem({ icon, value, label }) {
+  const { count, suffix, ref } = useNumberCounter(value);
+  return (
+    <div className="stat-item" ref={ref}>
+      {icon}
+      <div>
+        <strong>
+          {count}
+          {suffix}
+        </strong>
+        <span>{label}</span>
+      </div>
+    </div>
+  );
+}
+
 // ─── Halaman Beranda ─────────────────────────────────────────────────────────
 export default function Home() {
   const { school, majors, achievements, news, facilities } = useData();
@@ -78,8 +163,10 @@ export default function Home() {
   const heroStats = HERO_STATS_TEMPLATE.map((stat) => {
     const fallback = stat.key === "majorCount" ? majors.length : stat.key === "achievementCount" ? achievements.length : 0;
     const value = Number(school[stat.key] ?? fallback);
-    return { ...stat, value: `${value.toLocaleString("id-ID")}${stat.suffix}` };
+    return { ...stat, value: `${value}${stat.suffix}` };
   });
+
+  const parallaxOffset = useMouseParallax(0.5);
 
   return (
     <>
@@ -120,20 +207,17 @@ export default function Home() {
             {/* Statistik sekolah */}
             <div className="hero-stats">
               {heroStats.map(({ icon, value, label }) => (
-                <div className="stat-item" key={label}>
-                  {icon}
-                  <div>
-                    <strong>{value}</strong>
-                    <span>{label}</span>
-                  </div>
-                </div>
+                <StatItem key={label} icon={icon} value={value} label={label} />
               ))}
             </div>
           </div>
 
           {/* Visual / logo kanan */}
           <div className="hero-visual">
-            <div className="hero-card">
+            <div 
+              className="hero-card hero-parallax-card" 
+              style={{ transform: `translate(${parallaxOffset.x}px, ${parallaxOffset.y}px)` }}
+            >
               <div className="logo-orbit">
                 <img src="/logo-smk.png" alt="Logo SMK Negeri 1 Beringin" />
               </div>
@@ -159,7 +243,11 @@ export default function Home() {
                 <img
                   src={school.coverPhoto}
                   alt="Foto Sekolah"
-                  style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "var(--radius)" }}
+                  className="hero-parallax-card"
+                  style={{ 
+                    width: "100%", height: "100%", objectFit: "cover", borderRadius: "var(--radius)",
+                    transform: `translate(${parallaxOffset.x * 0.4}px, ${parallaxOffset.y * 0.4}px)`
+                  }}
                 />
               ) : (
                 <div className="image-placeholder">

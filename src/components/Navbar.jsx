@@ -138,7 +138,7 @@ export default function Navbar() {
         <Link href="/" className="brand" onClick={closeMenu}>
           <img src="/logo-smk.png" alt="Logo SMK Negeri 1 Beringin" />
           <div>
-            <strong>SMK N 1 BERINGIN</strong>
+            <strong>SMKN 1 BERINGIN</strong>
             <span>DELI SERDANG</span>
           </div>
         </Link>

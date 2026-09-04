@@ -2066,3 +2066,47 @@ img           { max-width: 100%; display: block; }
 .news-card-media-link:hover .news-video-overlay {
   transform: translateY(-1px);
 }
+
+/* ============================================================
+   ANIMATIONS & MICRO-INTERACTIONS
+   ============================================================ */
+
+/* Page Transition */
+@keyframes pageFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.page-transition {
+  animation: pageFadeIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Micro-interactions: Cards Hover */
+.major-card, .news-card, .facility-card {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease !important;
+  will-change: transform, box-shadow;
+}
+.major-card:hover, .news-card:hover, .facility-card:hover {
+  transform: translateY(-8px) !important;
+  box-shadow: 0 22px 45px rgba(18, 34, 58, 0.08) !important;
+}
+
+/* Micro-interactions: Card Images & Icons */
+.major-card-top .major-icon {
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), background 0.4s ease;
+}
+.major-card:hover .major-icon {
+  transform: scale(1.1) rotate(5deg);
+  background: linear-gradient(145deg, #eefaf4, #eaf5ff);
+}
+.news-card > img, .facility-card > img {
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+.news-card:hover > img, .facility-card:hover > img {
+  transform: scale(1.06) !important;
+}
+
+/* Parallax Elements */
+.hero-parallax-card {
+  transition: transform 0.1s linear;
+  will-change: transform;
+}
