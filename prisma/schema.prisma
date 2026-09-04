@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model School {
+  id                 Int      @id @default(1)
+  name               String
+  location           String
+  tagline            String
+  description        String   @db.Text
+  studentCount       Int      @default(0)
+  teacherCount       Int      @default(0)
+  achievementCount   Int      @default(0)
+  majorCount         Int      @default(0)
+  coverPhoto         String?  @db.LongText
+  principalName      String?
+  principalPhoto     String?  @db.LongText
+  principalGreeting  String?  @db.Text
+  vicePrincipalName  String?
+  vicePrincipalPhoto String?  @db.LongText
+}
+
+model Major {
+  id          String   @id @default(cuid())
+  short       String
+  name        String
+  description String   @db.Text
+  skills      Json
+  career      Json
+  image       String?  @db.LongText
+}
+
+model Achievement {
+  id          String   @id @default(cuid())
+  title       String
+  category    String
+  year        String
+  description String   @db.Text
+  image       String?  @db.LongText
+  createdAt   DateTime @default(now())
+}
+
+model News {
+  id           String   @id @default(cuid())
+  title        String
+  date         String
+  category     String
+  excerpt      String   @db.Text
+  content      String   @db.Text
+  image        String?  @db.LongText
+  uploader     String   @default("Sekolah")
+  uploaderType String   @default("admin")
+  createdAt    DateTime @default(now())
+}
+
+model Facility {
+  id          String   @id @default(cuid())
+  name        String
+  description String   @db.Text
+  image       String?  @db.LongText
+}
+
+model Pin {
+  id    String @id @default(cuid())
+  role  String
+  name  String
+  pin   String @unique
+}
