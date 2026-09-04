@@ -153,6 +153,21 @@ function StatItem({ icon, value, label }) {
   );
 }
 
+// ─── Hook Scroll Parallax (Latar Bergerak) ───────────────────────────────────
+function useScrollParallax(speed = 0.5) {
+  const [offsetY, setOffsetY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setOffsetY(window.scrollY * speed);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [speed]);
+
+  return offsetY;
+}
+
 // ─── Halaman Beranda ─────────────────────────────────────────────────────────
 export default function Home() {
   const { school, majors, achievements, news, facilities } = useData();
@@ -167,6 +182,7 @@ export default function Home() {
   });
 
   const parallaxOffset = useMouseParallax(0.5);
+  const scrollParallax = useScrollParallax(0.3);
 
   return (
     <>
@@ -175,8 +191,14 @@ export default function Home() {
           HERO — Banner utama halaman
           ================================================================ */}
       <section id="beranda" className="hero">
-        <div className="hero-glow hero-glow-one" />
-        <div className="hero-glow hero-glow-two" />
+        <div 
+          className="hero-glow hero-glow-one" 
+          style={{ transform: `translateY(${scrollParallax * 0.8}px)` }} 
+        />
+        <div 
+          className="hero-glow hero-glow-two" 
+          style={{ transform: `translateY(${scrollParallax * 1.2}px)` }} 
+        />
 
         <div className="container hero-grid">
 

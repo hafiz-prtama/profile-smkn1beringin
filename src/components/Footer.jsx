@@ -40,12 +40,25 @@ export default function Footer() {
 
         <div>
           <h4>Media Sosial</h4>
-          <div className="socials">
+          <div className="socials" style={{ marginBottom: "15px" }}>
             <a href="https://www.instagram.com/smk_negeri1_beringin?igsi=MXF4YWV2ZzIwNWlxMg==" aria-label="Instagram"><Instagram size={19} /></a>
             <a href="#" aria-label="Facebook"><Facebook size={19} /></a>
             <a href="https://www.youtube.com/@smknegeri1beringin943" aria-label="YouTube"><Youtube size={19} /></a>
           </div>
-          <a href="#" className="map-link">Lihat lokasi di Google Maps <ArrowUpRight size={16} /></a>
+          
+          {/* Google Maps Embed */}
+          <div style={{ borderRadius: "12px", overflow: "hidden", marginTop: "10px" }}>
+            <iframe
+              title="Lokasi SMK Negeri 1 Beringin"
+              src="https://maps.google.com/maps?q=SMK%20Negeri%201%20Beringin,%20Deli%20Serdang&t=&z=15&ie=UTF8&iwloc=&output=embed"
+              width="100%"
+              height="160"
+              style={{ border: 0, display: "block" }}
+              allowFullScreen=""
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            ></iframe>
+          </div>
         </div>
       </div>
       <div className="footer-bottom">

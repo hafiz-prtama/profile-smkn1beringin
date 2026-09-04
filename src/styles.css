@@ -2110,3 +2110,18 @@ img           { max-width: 100%; display: block; }
   transition: transform 0.1s linear;
   will-change: transform;
 }
+
+/* Additional Parallax & Floating */
+@keyframes floatBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+.logo-orbit {
+  animation: floatBob 6s ease-in-out infinite;
+}
+.hero-glow-one {
+  animation: floatBob 8s ease-in-out infinite alternate-reverse;
+}
+.hero-glow-two {
+  animation: floatBob 7s ease-in-out infinite;
+}

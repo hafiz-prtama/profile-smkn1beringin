@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { ArrowUpRight, CalendarDays, Newspaper, Play } from "lucide-react";
+import Tilt from "react-parallax-tilt";
 import { fetchSocialThumbnail, getSocialThumbnail, getVideoLabel } from "@/utils/socialVideo";
 
 export default function NewsCard({ item }) {
@@ -52,26 +53,38 @@ export default function NewsCard({ item }) {
   );
 
   return (
-    <article className="news-card">
-      {hasVideo ? (
-        <a
-          className="news-card-media-link"
-          href={item.videoLink}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={`Tonton video ${item.title}`}
-        >
-          {mediaContent}
-        </a>
-      ) : mediaContent}
+    <Tilt
+      tiltMaxAngleX={4}
+      tiltMaxAngleY={4}
+      scale={1.02}
+      transitionSpeed={400}
+      glareEnable={true}
+      glareMaxOpacity={0.1}
+      glareColor="#ffffff"
+      glarePosition="all"
+      style={{ display: "flex", height: "100%" }}
+    >
+      <article className="news-card" style={{ width: "100%" }}>
+        {hasVideo ? (
+          <a
+            className="news-card-media-link"
+            href={item.videoLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Tonton video ${item.title}`}
+          >
+            {mediaContent}
+          </a>
+        ) : mediaContent}
 
-      <div className="news-body">
-        <div className="news-meta"><span>{item.category}</span><small><CalendarDays size={14} /> {item.date}</small></div>
-        {item.uploader && <div className="news-uploader">Oleh: <strong>{item.uploader}</strong></div>}
-        <h3>{item.title}</h3>
-        <p>{item.excerpt}</p>
-        <Link href={`/berita/${item.id}`} className="text-link">Baca selengkapnya <ArrowUpRight size={16} /></Link>
-      </div>
-    </article>
+        <div className="news-body">
+          <div className="news-meta"><span>{item.category}</span><small><CalendarDays size={14} /> {item.date}</small></div>
+          {item.uploader && <div className="news-uploader">Oleh: <strong>{item.uploader}</strong></div>}
+          <h3>{item.title}</h3>
+          <p>{item.excerpt}</p>
+          <Link href={`/berita/${item.id}`} className="text-link">Baca selengkapnya <ArrowUpRight size={16} /></Link>
+        </div>
+      </article>
+    </Tilt>
   );
 }

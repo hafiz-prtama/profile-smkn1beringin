@@ -10,6 +10,7 @@ import {
   Hotel,
 } from "lucide-react";
 import Link from "next/link";
+import Tilt from "react-parallax-tilt";
 
 const icons = {
   pplg: Code2,
@@ -30,74 +31,76 @@ export default function MajorCard({ major }) {
     !major.image.includes(".svg");
 
   return (
-    <article className="major-card">
+    <Tilt
+      tiltMaxAngleX={5}
+      tiltMaxAngleY={5}
+      scale={1.02}
+      transitionSpeed={400}
+      glareEnable={true}
+      glareMaxOpacity={0.12}
+      glareColor="#ffffff"
+      glarePosition="all"
+      style={{ display: "flex", height: "100%" }}
+    >
+      <article className="major-card" style={{ width: "100%" }}>
+        {/* =====================================================
+            BAGIAN ATAS CARD
+        ===================================================== */}
 
-      {/* =====================================================
-          BAGIAN ATAS CARD
-      ===================================================== */}
-
-      {hasImage ? (
-        <div className="major-card-image">
-          <img
-            src={major.image}
-            alt={major.name}
-          />
-        </div>
-      ) : (
-        <div className="major-card-top">
-
-          <div className="major-icon">
-            <Icon
-              size={25}
-              strokeWidth={2.2}
+        {hasImage ? (
+          <div className="major-card-image">
+            <img
+              src={major.image}
+              alt={major.name}
             />
           </div>
+        ) : (
+          <div className="major-card-top">
+            <div className="major-icon">
+              <Icon
+                size={25}
+                strokeWidth={2.2}
+              />
+            </div>
 
-          {/* KODE JURUSAN HANYA DITAMPILKAN SEKALI */}
-          <span className="major-code">
-            {major.short}
-          </span>
+            {/* KODE JURUSAN HANYA DITAMPILKAN SEKALI */}
+            <span className="major-code">
+              {major.short}
+            </span>
+          </div>
+        )}
 
+        {/* =====================================================
+            ISI CARD
+        ===================================================== */}
+
+        <div className="major-card-content">
+          <h3>
+            {major.name}
+          </h3>
+
+          <p>
+            {major.description}
+          </p>
+
+          {/* =================================================
+              TOMBOL
+          ================================================= */}
+
+          <Link
+            href={`/jurusan/${major.id}`}
+            className="major-card-button"
+          >
+            <span>
+              Lihat Jurusan
+            </span>
+
+            <ArrowUpRight
+              size={17}
+            />
+          </Link>
         </div>
-      )}
-
-
-      {/* =====================================================
-          ISI CARD
-      ===================================================== */}
-
-      <div className="major-card-content">
-
-        <h3>
-          {major.name}
-        </h3>
-
-        <p>
-          {major.description}
-        </p>
-
-
-        {/* =================================================
-            TOMBOL
-        ================================================= */}
-
-        <Link
-          href={`/jurusan/${major.id}`}
-          className="major-card-button"
-        >
-
-          <span>
-            Lihat Jurusan
-          </span>
-
-          <ArrowUpRight
-            size={17}
-          />
-
-        </Link>
-
-      </div>
-
-    </article>
+      </article>
+    </Tilt>
   );
 }

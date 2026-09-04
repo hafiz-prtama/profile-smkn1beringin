@@ -1,10 +1,4 @@
 {
-  "/api/school/route": "app/api/school/route.js",
-  "/api/majors/route": "app/api/majors/route.js",
-  "/api/achievements/route": "app/api/achievements/route.js",
-  "/api/news/route": "app/api/news/route.js",
-  "/api/facilities/route": "app/api/facilities/route.js",
-  "/icon.png/route": "app/icon.png/route.js",
   "/page": "app/page.js",
   "/dashboard/page": "app/dashboard/page.js",
   "/profil/page": "app/profil/page.js"
