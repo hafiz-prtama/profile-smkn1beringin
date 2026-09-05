@@ -21,6 +21,7 @@ const NAV_ITEMS = [
   { id: "berita", icon: <Newspaper size={17} />, label: "Berita" },
   { id: "fasilitas", icon: <Building2 size={17} />, label: "Fasilitas" },
   { id: "chat", icon: <MessageCircle size={17} />, label: "Pesan Siswa" },
+  { id: "bk", icon: <ShieldCheck size={17} />, label: "Konseling BK" },
   { id: "pengaturan", icon: <Settings size={17} />, label: "Pengaturan" },
 ];
 
@@ -1397,6 +1398,244 @@ function TabChat({ toast }) {
 // ─── Dashboard utama ──────────────────────────────────────────────────────────
 import RealTimeClock from '@/components/RealTimeClock';
 
+// ─── Tab: Konseling BK ────────────────────────────────────────────────────────
+
+function TabBK({ toast }) {
+  const [tickets, setTickets] = useState([]);
+  const [selectedTicketId, setSelectedTicketId] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [text, setText] = useState("");
+  const messagesEndRef = useRef(null);
+
+  useEffect(() => {
+    fetchTickets();
+    const tInterval = setInterval(fetchTickets, 5000);
+    return () => clearInterval(tInterval);
+  }, []);
+
+  useEffect(() => {
+    if (selectedTicketId) {
+      fetchMessages();
+      const mInterval = setInterval(fetchMessages, 3000);
+      return () => clearInterval(mInterval);
+    }
+  }, [selectedTicketId]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  async function fetchTickets() {
+    try {
+      // we assume DataContext handles auth, we inject headers manually if needed
+      // Actually we just rely on cookies/headers. Nextjs fetch to relative path uses cookie
+      // Wait, we can pass role in header since we are mocking auth
+      const role = localStorage.getItem("smk_dashboard_role");
+      let roleType = "admin_bk";
+      if (role) roleType = JSON.parse(role).type;
+
+      const res = await fetch('/api/bk/tickets', {
+        headers: { 'x-admin-role': roleType }
+      });
+      const data = await res.json();
+      if (data.success) {
+        setTickets(data.tickets);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function fetchMessages() {
+    if (!selectedTicketId) return;
+    try {
+      const res = await fetch(`/api/bk/chat?ticketId=${selectedTicketId}`);
+      const data = await res.json();
+      if (data.success) setMessages(data.messages);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function sendMessage(e) {
+    e.preventDefault();
+    if (!text.trim() || !selectedTicketId) return;
+
+    const role = localStorage.getItem("smk_dashboard_role");
+    let roleType = "admin_bk";
+    if (role) roleType = JSON.parse(role).type;
+
+    try {
+      await fetch('/api/bk/chat', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-admin-role': roleType
+        },
+        body: JSON.stringify({ ticketId: selectedTicketId, text })
+      });
+      setText("");
+      fetchMessages();
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function handleAction(actionType) {
+    if (!selectedTicketId) return;
+    const role = localStorage.getItem("smk_dashboard_role");
+    let roleType = "admin_bk";
+    if (role) roleType = JSON.parse(role).type;
+
+    try {
+      await fetch('/api/bk/chat', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-admin-role': roleType
+        },
+        body: JSON.stringify({ ticketId: selectedTicketId, text: "", actionType, isAction: true })
+      });
+      fetchMessages();
+      fetchTickets();
+      if (actionType === 'ACCEPT_TICKET') toast("Konsultasi diterima");
+      if (actionType === 'AGREE_UNMASK') toast("Permintaan dikirim ke siswa");
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  const selectedTicket = tickets.find(t => t.id === selectedTicketId);
+
+  return (
+    <div style={{ display: 'flex', height: '70vh', background: 'white', borderRadius: '12px', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
+      {/* Kiri: Daftar Tiket */}
+      <div style={{ width: '350px', borderRight: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ padding: '1.25rem', borderBottom: '1px solid #e2e8f0', background: '#f8fafc' }}>
+          <h2 style={{ fontSize: '1rem', fontWeight: 'bold' }}>Daftar Tiket Konseling</h2>
+        </div>
+        <div style={{ flex: 1, overflowY: 'auto' }}>
+          {tickets.length === 0 ? (
+            <div style={{ padding: '2rem', textAlign: 'center', color: '#94a3b8' }}>Belum ada tiket</div>
+          ) : (
+            tickets.map(t => (
+              <div 
+                key={t.id} 
+                onClick={() => setSelectedTicketId(t.id)}
+                style={{ 
+                  padding: '1rem', 
+                  borderBottom: '1px solid #f1f5f9', 
+                  cursor: 'pointer',
+                  background: selectedTicketId === t.id ? '#eff6ff' : 'white'
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                  <strong style={{ color: '#1e293b' }}>
+                    {t.isUnmasked && t.user ? `${t.user.name} (${t.user.nisn})` : t.pseudoId}
+                  </strong>
+                  <span style={{ fontSize: '0.75rem', padding: '0.1rem 0.5rem', borderRadius: '4px', background: t.status === 'PENDING' ? '#fef3c7' : (t.status === 'ACTIVE' ? '#dcfce7' : '#f1f5f9') }}>
+                    {t.status}
+                  </span>
+                </div>
+                <div style={{ fontSize: '0.8rem', color: '#64748b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  {t.complaint}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+
+      {/* Kanan: Ruang Obrolan */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: '#f8fafc' }}>
+        {selectedTicket ? (
+          <>
+            <div style={{ padding: '1rem', borderBottom: '1px solid #e2e8f0', background: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                <h3 style={{ margin: 0, fontSize: '1rem' }}>
+                  {selectedTicket.isUnmasked && selectedTicket.user ? `${selectedTicket.user.name} (${selectedTicket.user.nisn})` : selectedTicket.pseudoId}
+                </h3>
+                <div style={{ fontSize: '0.8rem', color: '#64748b' }}>Kategori: {
+                  (() => {
+                    try { return JSON.parse(selectedTicket.categories).join(', '); }
+                    catch(e) { return selectedTicket.categories; }
+                  })()
+                }</div>
+              </div>
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                {selectedTicket.status === 'PENDING' && (
+                  <button onClick={() => handleAction('ACCEPT_TICKET')} style={{ background: '#22c55e', color: 'white', padding: '0.5rem 1rem', borderRadius: '6px', fontWeight: 'bold' }}>
+                    Terima Konsultasi
+                  </button>
+                )}
+                {selectedTicket.status === 'ACTIVE' && !selectedTicket.isUnmasked && (
+                  <button onClick={() => handleAction('AGREE_UNMASK')} style={{ background: '#f59e0b', color: 'white', padding: '0.5rem 1rem', borderRadius: '6px', fontWeight: 'bold' }}>
+                    Ajukan Sesi Offline
+                  </button>
+                )}
+              </div>
+            </div>
+
+            <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div style={{ background: 'white', padding: '1rem', borderRadius: '8px', border: '1px solid #e2e8f0', marginBottom: '1rem' }}>
+                <strong style={{ display: 'block', marginBottom: '0.5rem', color: '#334155', fontSize: '0.875rem' }}>Keluhan Awal:</strong>
+                <p style={{ color: '#475569', margin: 0 }}>{selectedTicket.complaint}</p>
+              </div>
+
+              {messages.map(msg => (
+                <div key={msg.id} style={{ alignSelf: msg.sender === 'ADMIN_BK' ? 'flex-end' : 'flex-start', maxWidth: '75%' }}>
+                  {msg.sender === 'SYSTEM' ? (
+                    <div style={{ background: '#fef3c7', color: '#92400e', padding: '0.5rem 1rem', borderRadius: '999px', fontSize: '0.8rem', textAlign: 'center' }}>
+                      {msg.text}
+                    </div>
+                  ) : msg.isAction && msg.sender === 'ADMIN_BK' ? (
+                    <div style={{ background: '#fef3c7', padding: '1rem', borderRadius: '8px', border: '1px solid #fde68a', fontSize: '0.875rem', color: '#92400e' }}>
+                      <em>Anda mengirimkan permintaan sesi offline / buka identitas kepada siswa.</em>
+                    </div>
+                  ) : (
+                    <div style={{ 
+                      padding: '0.75rem 1rem', 
+                      borderRadius: '12px',
+                      background: msg.sender === 'ADMIN_BK' ? '#2563eb' : 'white',
+                      color: msg.sender === 'ADMIN_BK' ? 'white' : '#1e293b',
+                      border: msg.sender === 'ADMIN_BK' ? 'none' : '1px solid #e2e8f0'
+                    }}>
+                      {msg.text.split("\n").map((line, j, arr) => (
+                        <span key={j}>{line}{j < arr.length - 1 && <br />}</span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+              <div ref={messagesEndRef} />
+            </div>
+
+            <form onSubmit={sendMessage} style={{ padding: '1rem', background: 'white', borderTop: '1px solid #e2e8f0', display: 'flex', gap: '0.5rem' }}>
+              <input
+                type="text"
+                value={text}
+                onChange={e => setText(e.target.value)}
+                disabled={selectedTicket.status === 'PENDING' || selectedTicket.status === 'CLOSED'}
+                placeholder={selectedTicket.status === 'PENDING' ? "Terima konsultasi terlebih dahulu..." : "Ketik pesan..."}
+                style={{ flex: 1, padding: '0.75rem', borderRadius: '6px', border: '1px solid #cbd5e1', outline: 'none' }}
+              />
+              <button
+                type="submit"
+                disabled={selectedTicket.status === 'PENDING' || selectedTicket.status === 'CLOSED' || !text.trim()}
+                style={{ background: selectedTicket.status === 'PENDING' ? '#94a3b8' : '#2563eb', color: 'white', padding: '0 1.5rem', borderRadius: '6px', fontWeight: 'bold' }}
+              >
+                Kirim
+              </button>
+            </form>
+          </>
+        ) : (
+          <div style={{ margin: 'auto', color: '#94a3b8' }}>Pilih tiket untuk melihat detail</div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function Dashboard() {
   const { getSession, getRole, setSession, clearSession } = useData();
   const router = useRouter();
@@ -1413,7 +1652,16 @@ export default function Dashboard() {
     setRole(getRole() || { type: "admin", name: "Admin" });
   }, []);
 
-  function handleLoginSuccess(nextRole) { setSession(true, nextRole); setRole(nextRole); setLoggedIn(true); }
+  function handleLoginSuccess(nextRole) { 
+    setSession(true, nextRole); 
+    setRole(nextRole); 
+    setLoggedIn(true); 
+    
+    // Set default tab based on role
+    if (nextRole?.type === "admin_bk") setActiveTab("bk");
+    else if (nextRole?.type === "super_user" || nextRole?.type === "major") setActiveTab("jurusan");
+    else setActiveTab("overview");
+  }
 
   function handleLogout() { clearSession(); setLoggedIn(false); setRole(null); setActiveTab("overview"); }
 
@@ -1437,19 +1685,33 @@ export default function Dashboard() {
 
   if (!loggedIn) return <PinLogin onSuccess={handleLoginSuccess} />;
 
-  const TABS = role?.type === "major"
-    ? { berita: <TabBerita toast={showToast} role={role} autoAddKey={addAction.type === "berita" ? addAction.key : 0} /> }
-    : {
-      overview: <TabOverview setTab={setActiveTab} />,
-      "data-sekolah": <TabDataSekolah toast={showToast} />,
-      profil: <TabProfil toast={showToast} />,
-      jurusan: <TabJurusan toast={showToast} autoAddKey={addAction.type === "jurusan" ? addAction.key : 0} />,
-      prestasi: <TabPrestasi toast={showToast} autoAddKey={addAction.type === "prestasi" ? addAction.key : 0} />,
-      berita: <TabBerita toast={showToast} role={role} autoAddKey={addAction.type === "berita" ? addAction.key : 0} />,
-      fasilitas: <TabFasilitas toast={showToast} autoAddKey={addAction.type === "fasilitas" ? addAction.key : 0} />,
-      chat: <TabChat toast={showToast} />,
-      pengaturan: <TabPengaturan toast={showToast} onLogout={handleLogout} />,
-    };
+  // role.type: super_admin, admin, admin_bk, super_user/major
+  let allowedTabs = [];
+  if (role?.type === "super_admin") {
+    allowedTabs = NAV_ITEMS.map(i => i.id);
+  } else if (role?.type === "admin_bk") {
+    allowedTabs = ["bk"];
+  } else if (role?.type === "super_user" || role?.type === "major") {
+    allowedTabs = ["jurusan"];
+  } else {
+    // admin biasa
+    allowedTabs = ["overview", "data-sekolah", "profil", "jurusan", "prestasi", "berita", "fasilitas", "chat"];
+  }
+
+  const visibleNav = NAV_ITEMS.filter(item => allowedTabs.includes(item.id));
+
+  const TABS = {
+    overview: <TabOverview setTab={setActiveTab} />,
+    "data-sekolah": <TabDataSekolah toast={showToast} />,
+    profil: <TabProfil toast={showToast} />,
+    jurusan: <TabJurusan toast={showToast} autoAddKey={addAction.type === "jurusan" ? addAction.key : 0} />,
+    prestasi: <TabPrestasi toast={showToast} autoAddKey={addAction.type === "prestasi" ? addAction.key : 0} />,
+    berita: <TabBerita toast={showToast} role={role} autoAddKey={addAction.type === "berita" ? addAction.key : 0} />,
+    fasilitas: <TabFasilitas toast={showToast} autoAddKey={addAction.type === "fasilitas" ? addAction.key : 0} />,
+    chat: <TabChat toast={showToast} />,
+    bk: <TabBK toast={showToast} />,
+    pengaturan: <TabPengaturan toast={showToast} onLogout={handleLogout} />,
+  };
 
   const currentNavItem = NAV_ITEMS.find((n) => n.id === activeTab);
 
@@ -1471,7 +1733,7 @@ export default function Dashboard() {
 
         <nav className="admin-nav">
           <span className="admin-nav-label">MENU</span>
-          {(role?.type === "major" ? NAV_ITEMS.filter(item => item.id === "berita") : NAV_ITEMS).map((item) => (
+          {visibleNav.map((item) => (
             <button
               key={item.id}
               className={`admin-nav-link ${activeTab === item.id ? "admin-nav-link--active" : ""}`}
@@ -1497,8 +1759,12 @@ export default function Dashboard() {
       <main className="admin-main">
         <header className="admin-topbar">
           <div>
-            <h1 className="admin-page-title">{currentNavItem?.label}</h1>
-            <p className="admin-page-sub">{role?.type === "major" ? `Akses Jurusan · ${role.name} · Hanya tambah berita` : "Dashboard Admin · SMK Negeri 1 Beringin"}</p>
+            <h1 className="admin-page-title">{currentNavItem?.label || "Dashboard"}</h1>
+            <p className="admin-page-sub">
+              {role?.type === "admin_bk" ? "Dashboard Bimbingan Konseling" :
+               role?.type === "super_user" || role?.type === "major" ? `Akses Jurusan · ${role.name}` :
+               "Dashboard Admin · SMK Negeri 1 Beringin"}
+            </p>
           </div>
         </header>
 

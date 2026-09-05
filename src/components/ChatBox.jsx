@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { MessageCircle, X, Send, Bot, ArrowLeft, RefreshCw, Clock } from "lucide-react";
+import Link from "next/link";
 import { chatbotFaq } from "@/data/mockData";
 
 function findAnswer(input) {
@@ -92,6 +93,19 @@ export default function ChatBox() {
 
     setText("");
     
+    // Intervensi untuk opsi Layanan Konseling BK
+    if (value === "Layanan Konseling BK") {
+      const userMsg = { sender: "USER", text: value, createdAt: new Date().toISOString() };
+      const botMsg = { 
+        sender: "BOT", 
+        text: "Untuk menjaga kerahasiaan dan privasi kamu, layanan Bimbingan Konseling dilakukan di ruang tertutup. Silakan klik tombol di bawah ini untuk masuk ke Ruang Konseling BK.", 
+        isBkLink: true,
+        createdAt: new Date().toISOString() 
+      };
+      setMessages(prev => [...prev, userMsg, botMsg]);
+      return;
+    }
+
     // 1. Tambahkan pesan user ke UI sementara
     const userMsg = { sender: "USER", text: value, createdAt: new Date().toISOString() };
     setMessages(prev => [...prev, userMsg]);
@@ -193,6 +207,9 @@ export default function ChatBox() {
                 {QUICK_QUESTIONS.map((q, i) => (
                   <button key={i} className="chat-quick-pill" onClick={() => sendMessage(null, q)}>{q}</button>
                 ))}
+                <button className="chat-quick-pill" style={{ background: '#3b82f6', color: 'white', borderColor: '#2563eb' }} onClick={() => sendMessage(null, "Layanan Konseling BK")}>
+                  Layanan Konseling BK
+                </button>
               </div>
             )}
 
@@ -213,6 +230,13 @@ export default function ChatBox() {
                       {msg.text.split("\n").map((line, j, arr) => (
                         <span key={j}>{line}{j < arr.length - 1 && <br />}</span>
                       ))}
+                      {msg.isBkLink && (
+                        <div style={{ marginTop: '10px' }}>
+                          <Link href="/konseling" style={{ display: 'inline-block', padding: '8px 12px', background: '#2563eb', color: 'white', borderRadius: '6px', textDecoration: 'none', fontSize: '13px', fontWeight: 'bold' }}>
+                            Ruang Konseling BK
+                          </Link>
+                        </div>
+                      )}
                     </div>
                     <span className="chat-time">{formatTime(msg.createdAt)}</span>
                   </div>
@@ -226,6 +250,9 @@ export default function ChatBox() {
                 {QUICK_QUESTIONS.map((q, i) => (
                   <button key={i} className="chat-quick-pill" onClick={() => sendMessage(null, q)}>{q}</button>
                 ))}
+                <button className="chat-quick-pill" style={{ background: '#3b82f6', color: 'white', borderColor: '#2563eb' }} onClick={() => sendMessage(null, "Layanan Konseling BK")}>
+                  Layanan Konseling BK
+                </button>
               </div>
             )}
 
