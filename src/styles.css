@@ -4186,3 +4186,375 @@ img {
   transition: none !important;
   transform: none !important;
 }
+
+/* ============================================================
+   DAVIDE BARATTA STYLE INTRO PRELOADER & REVEAL CHOREOGRAPHY
+   ============================================================ */
+
+.intro-preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* Tirai Latar Belakang */
+.intro-curtain {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+}
+
+.intro-curtain--bg {
+  background: #06152b;
+  z-index: 1;
+  transition: transform 0.9s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.intro-curtain--accent {
+  background: radial-gradient(circle at 50% 40%, rgba(24, 166, 107, 0.25) 0%, transparent 70%);
+  z-index: 2;
+  transition: transform 0.8s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.intro-grid-pattern {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+/* Stage Layout */
+.intro-stage {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+  max-width: 1280px;
+  padding: 40px 32px;
+  box-sizing: border-box;
+  color: #ffffff;
+}
+
+/* Top Header Bar */
+.intro-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  transition: opacity 0.4s ease;
+}
+
+.intro-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(8px);
+}
+
+.intro-pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #18a66b;
+  box-shadow: 0 0 10px #18a66b;
+  animation: introPulse 1.4s infinite ease-in-out;
+}
+
+.intro-pill-text {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: #9be5c3;
+  text-transform: uppercase;
+}
+
+.intro-loc-text {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+}
+
+/* Brand Box (Di Tengah Layar - Akan Meluncur Naik ke Header saat 100%) */
+.intro-hero-logo-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-top: auto;
+  margin-bottom: 24px;
+  transition: transform 0.9s cubic-bezier(0.76, 0, 0.24, 1), opacity 0.8s ease;
+  will-change: transform, opacity;
+}
+
+.intro-emblem-wrap {
+  width: 76px;
+  height: 76px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 35px rgba(24, 166, 107, 0.25);
+}
+
+.intro-emblem-img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.intro-huge-title {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.intro-word {
+  display: inline-flex;
+}
+
+.intro-char {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: clamp(34px, 6.5vw, 76px);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: #ffffff;
+  display: inline-block;
+  animation: introLetterReveal 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+}
+
+@keyframes introLetterReveal {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.intro-sub-line {
+  font-size: clamp(12px, 1.4vw, 15px);
+  color: #8da9cb;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+/* Center Big Counter (Angka 0 - 100% yang Jelas dan Menonjol) */
+.intro-center-counter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: auto;
+  width: 100%;
+  max-width: 380px;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  will-change: opacity, transform;
+}
+
+.intro-number-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+
+.intro-big-number {
+  font-family: "Plus Jakarta Sans", monospace;
+  font-size: clamp(64px, 10vw, 110px);
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  letter-spacing: -0.06em;
+  color: #ffffff;
+  text-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+  min-width: 2.1ch;
+  text-align: right;
+}
+
+.intro-percent-symbol {
+  font-size: clamp(28px, 4vw, 46px);
+  font-weight: 700;
+  color: #64d39d;
+  margin-left: 6px;
+  line-height: 1;
+}
+
+.intro-line-track {
+  width: 100%;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+}
+
+.intro-line-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #18a66b 0%, #64d39d 100%);
+  border-radius: 999px;
+  box-shadow: 0 0 16px #64d39d;
+  transition: width 0.04s linear;
+}
+
+/* Footer Bar Preloader */
+.intro-footer-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  transition: opacity 0.4s ease;
+}
+
+.intro-status-msg {
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+}
+
+.intro-skip-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #c7dcfa;
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  transition: all 0.2s ease;
+}
+
+.intro-skip-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateX(2px);
+}
+
+/* ============================================================
+   STATE SHIFTING SAAT 100% TERCAPAI
+   ============================================================ */
+
+/* Tirai meluncur naik */
+.intro-preloader--shifting .intro-curtain--bg {
+  transform: translateY(-100%);
+}
+
+.intro-preloader--shifting .intro-curtain--accent {
+  transform: translateY(-100%);
+  transition-delay: 0.05s;
+}
+
+.intro-preloader--shifting .intro-grid-pattern {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.intro-preloader--shifting .intro-header-bar,
+.intro-preloader--shifting .intro-footer-bar {
+  opacity: 0;
+  transform: translateY(-15px);
+  transition: all 0.4s ease;
+}
+
+/* Counter memudar turun */
+.intro-preloader--shifting .intro-center-counter {
+  opacity: 0;
+  transform: scale(0.85);
+}
+
+/* Brand logo & judul meluncur NAIK ke posisi navbar/header */
+.intro-preloader--shifting .intro-hero-logo-box {
+  transform: translateY(-28vh) scale(0.65);
+  opacity: 0;
+}
+
+/* ============================================================
+   CHOREOGRAPHY: KOMPONEN BERANDA NAIK KE POSISI MASING-MASING
+   ============================================================ */
+
+/* Navbar Entrance */
+body.intro-active .navbar,
+.navbar.navbar--intro-initial {
+  transform: translateY(-100%);
+  opacity: 0;
+}
+
+body.intro-active.intro-revealed .navbar,
+.navbar.navbar--intro-revealed {
+  transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.85s ease !important;
+  transform: translateY(0) !important;
+  opacity: 1 !important;
+}
+
+/* Komponen Hero: Initial State (tersembunyi sedikit di bawah saat intro aktif) */
+body.intro-active .hero-orchestrate {
+  opacity: 0;
+  transform: translateY(50px);
+  will-change: transform, opacity;
+}
+
+/* Komponen Hero: Revealed State (meluncur naik ke posisi semula) */
+body.intro-active.intro-revealed .hero-orchestrate,
+.hero-orchestrate.hero-orchestrate--revealed {
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    transform 0.95s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.95s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Staggered Delays untuk efek berurutan mewah */
+.hero-orchestrate.hero-delay-1 {
+  transition-delay: 0.05s; /* Eyebrow & Typewriter Title */
+}
+
+.hero-orchestrate.hero-delay-2 {
+  transition-delay: 0.18s; /* Deskripsi sekolah */
+}
+
+.hero-orchestrate.hero-delay-3 {
+  transition-delay: 0.28s; /* Tombol aksi CTA */
+}
+
+.hero-orchestrate.hero-delay-4 {
+  transition-delay: 0.38s; /* Kartu statistik */
+}
+
+.hero-orchestrate.hero-delay-5 {
+  transition-delay: 0.48s; /* Hero 3D Orbit Card di sebelah kanan */
+}

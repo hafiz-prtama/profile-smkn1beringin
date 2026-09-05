@@ -186,7 +186,6 @@ export default function Home() {
 
   return (
     <>
-
       {/* ================================================================
           HERO — Banner utama halaman
           ================================================================ */}
@@ -204,17 +203,21 @@ export default function Home() {
 
           {/* Teks & CTA kiri */}
           <div className="hero-copy">
-            <span className="eyebrow light">WEBSITE RESMI SEKOLAH</span>
+            <div className="hero-orchestrate hero-delay-1">
+              <span className="eyebrow light">WEBSITE RESMI SEKOLAH</span>
 
-            <h1 className="hero-typewriter">
-              {typedText}
-              <span className="typewriter-cursor" aria-hidden="true"></span>
-            </h1>
+              <h1 className="hero-typewriter">
+                {typedText}
+                <span className="typewriter-cursor" aria-hidden="true"></span>
+              </h1>
+            </div>
 
-            <p>{school.tagline}</p>
+            <p className="hero-orchestrate hero-delay-2">
+              {school.tagline}
+            </p>
 
             {/* Tombol aksi */}
-            <div className="hero-actions">
+            <div className="hero-actions hero-orchestrate hero-delay-3">
               <button
                 className="button primary"
                 onClick={() => {
@@ -227,7 +230,7 @@ export default function Home() {
             </div>
 
             {/* Statistik sekolah */}
-            <div className="hero-stats">
+            <div className="hero-stats hero-orchestrate hero-delay-4">
               {heroStats.map(({ icon, value, label }) => (
                 <StatItem key={label} icon={icon} value={value} label={label} />
               ))}
@@ -235,7 +238,7 @@ export default function Home() {
           </div>
 
           {/* Visual / logo kanan */}
-          <div className="hero-visual">
+          <div className="hero-visual hero-orchestrate hero-delay-5">
             <div 
               className="hero-card hero-parallax-card" 
               style={{ transform: `translate(${parallaxOffset.x}px, ${parallaxOffset.y}px)` }}

@@ -62,8 +62,37 @@ export default function Footer() {
         </div>
       </div>
       <div className="footer-bottom">
-        <div className="container">
-          © 2026 SMK Negeri 1 Beringin. Semua hak dilindungi.
+        <div className="container" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
+          <span>© 2026 SMK Negeri 1 Beringin. Semua hak dilindungi.</span>
+          <button
+            type="button"
+            onClick={() => {
+              window.dispatchEvent(new CustomEvent("replay-intro"));
+            }}
+            style={{
+              background: "rgba(255, 255, 255, 0.08)",
+              border: "1px solid rgba(255, 255, 255, 0.15)",
+              color: "#9be5c3",
+              fontSize: "12px",
+              padding: "4px 12px",
+              borderRadius: "999px",
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "6px"
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.background = "rgba(24, 166, 107, 0.2)";
+              e.currentTarget.style.borderColor = "#18a66b";
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.background = "rgba(255, 255, 255, 0.08)";
+              e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.15)";
+            }}
+          >
+            <span>✨ Putar Ulang Intro</span>
+          </button>
         </div>
       </div>
     </footer>
