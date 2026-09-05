@@ -20,17 +20,19 @@ export function DataProvider({ children }) {
   const [achievements, setAchievementsState] = useState(defaultAchievements);
   const [news,         setNewsState]         = useState(defaultNews);
   const [facilities,   setFacilitiesState]   = useState(defaultFacilities);
+  const [pins,         setPinsState]         = useState([]);
 
   // Load from API on mount
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [schRes, majRes, achRes, newsRes, facRes] = await Promise.all([
+        const [schRes, majRes, achRes, newsRes, facRes, pinsRes] = await Promise.all([
           fetch('/api/school'),
           fetch('/api/majors'),
           fetch('/api/achievements'),
           fetch('/api/news'),
-          fetch('/api/facilities')
+          fetch('/api/facilities'),
+          fetch('/api/pins')
         ]);
         
         if (schRes.ok) setSchoolState(await schRes.json());
@@ -38,6 +40,10 @@ export function DataProvider({ children }) {
         if (achRes.ok) setAchievementsState(await achRes.json());
         if (newsRes.ok) setNewsState(await newsRes.json());
         if (facRes.ok) setFacilitiesState(await facRes.json());
+        if (pinsRes.ok) {
+          const pData = await pinsRes.json();
+          if (pData.success) setPinsState(pData.pins);
+        }
       } catch (err) {
         console.error("Failed to fetch initial data", err);sas
       }
@@ -79,6 +85,17 @@ export function DataProvider({ children }) {
     await fetch('/api/facilities', { method: 'PUT', body: JSON.stringify(data) });
   }, []);
 
+  const updatePins = useCallback(async (data) => {
+    setPinsState(data);
+    const res = await fetch('/api/pins', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+    const resData = await res.json();
+    if (resData.success) {
+      setPinsState(resData.pins);
+      return { success: true };
+    }
+    return { success: false, error: resData.error };
+  }, []);
+
   // ── Session management ──
   const getSession = ()      => {
     if (typeof window !== "undefined") {
@@ -110,9 +127,6 @@ export function DataProvider({ children }) {
   };
 
   const getPin = () => "1234";
-  const savePin = (pin) => {};
-  const getMajorPins = () => ({});
-  const saveMajorPins = (pins) => {};
 
   return (
     <DataContext.Provider value={{
@@ -121,8 +135,9 @@ export function DataProvider({ children }) {
       achievements, updateAchievements,
       news, updateNews,
       facilities, updateFacilities,
+      pins, updatePins,
       getSession, getRole, setSession, clearSession,
-      getPin, savePin, getMajorPins, saveMajorPins
+      getPin
     }}>
       {children}
     </DataContext.Provider>

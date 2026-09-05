@@ -92,9 +92,10 @@ export default function TicketChatPage() {
   }
 
   return (
-    <div style={{ background: '#f1f5f9', minHeight: '100vh', display: 'flex', justifyContent: 'center' }}>
-      {/* Container WA Style */}
-      <div style={{ width: '100%', maxWidth: '800px', display: 'flex', flexDirection: 'column', background: '#efeae2', height: '100vh', boxShadow: '0 0 10px rgba(0,0,0,0.1)' }}>
+    <div style={{ background: '#efeae2', minHeight: 'calc(100vh - 78px)', display: 'flex', justifyContent: 'center' }}>
+      <div style={{ width: '100%', maxWidth: '800px', display: 'flex', flexDirection: 'column', background: '#efeae2', height: 'calc(100vh - 78px)', boxShadow: '0 0 10px rgba(0,0,0,0.1)', position: 'relative' }}>
+        {/* Pattern Background */}
+        <div style={{ position: 'absolute', inset: 0, opacity: 0.06, pointerEvents: 'none', backgroundImage: 'url("https://w7.pngwing.com/pngs/949/69/png-transparent-whatsapp-application-software-message-icon-whatsapp-background-texture-angle-text-thumbnail.png")', backgroundRepeat: 'repeat', backgroundSize: '400px' }} />
         
         {/* Header ala WA */}
         <div style={{ background: '#008069', color: 'white', padding: '12px 16px', display: 'flex', alignItems: 'center', gap: '12px', zIndex: 10 }}>

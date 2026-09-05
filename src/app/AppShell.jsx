@@ -16,7 +16,7 @@ export default function AppShell({ children }) {
   return (
     <DataProvider>
       <div className={`app-shell ${isDashboard ? "app-shell--dashboard" : ""}`}>
-        {!isDashboard && !isBkChatRoom && <Navbar />}
+        {!isDashboard && <Navbar />}
         <main>{children}</main>
         {!isDashboard && !isBkChatRoom && <ChatBox />}
         {!isDashboard && !isBkChatRoom && <Footer />}

@@ -1160,58 +1160,132 @@ function TabFasilitas({ toast, autoAddKey = 0 }) {
 
 // ─── Tab: Pengaturan ──────────────────────────────────────────────────────────
 function TabPengaturan({ toast, onLogout }) {
-  const { getPin, savePin, getMajorPins, saveMajorPins } = useData();
-  const [oldPin, setOldPin] = useState("");
-  const [newPin, setNewPin] = useState("");
-  const [newPin2, setNewPin2] = useState("");
-  const [err, setErr] = useState("");
-  const [majorPins, setMajorPins] = useState(() => getMajorPins());
+  const { pins, updatePins } = useData();
+  const [list, setList] = useState(pins || []);
+  const [editing, setEditing] = useState(null);
+  const [confirm, setConfirm] = useState(null);
 
-  function handleChangePin() {
-    setErr("");
-    if (oldPin !== getPin()) { setErr("PIN admin lama salah."); return; }
-    if (!/^\d{4}$/.test(newPin)) { setErr("PIN baru harus 4 digit angka."); return; }
-    if (newPin !== newPin2) { setErr("Konfirmasi PIN tidak cocok."); return; }
-    savePin(newPin);
-    setOldPin(""); setNewPin(""); setNewPin2("");
-    toast("PIN Admin berhasil diubah!");
+  React.useEffect(() => { setList(pins || []); }, [pins]);
+
+  function handleField(idx, key, val) {
+    setList((prev) => prev.map((item, i) => i === idx ? { ...item, [key]: val } : item));
   }
 
-  function handleSaveMajorPins() {
-    const cleaned = { ...majorPins };
-    for (const [major, pin] of Object.entries(cleaned)) {
-      if (!/^\d{4}$/.test(String(pin))) { toast(`PIN ${major} harus 4 digit angka!`); return; }
+  function handleAdd() {
+    const empty = { id: "", role: "major", name: "", pin: "" };
+    setList((prev) => { setEditing(prev.length); return [...prev, empty]; });
+  }
+
+  async function handleSave() {
+    const currentEdit = list[editing];
+    if (!currentEdit.name) return toast("Nama pengguna/jurusan harus diisi!");
+    if (!/^\d{4}$/.test(currentEdit.pin)) return toast("PIN harus 4 digit angka!");
+    if (!currentEdit.role) return toast("Role harus dipilih!");
+
+    const res = await updatePins(list);
+    if (res?.success) {
+      setEditing(null);
+      toast("Daftar PIN berhasil disimpan!");
+    } else {
+      toast(res?.error || "Gagal menyimpan PIN.");
     }
-    saveMajorPins(cleaned);
-    setMajorPins(cleaned);
-    toast("PIN semua jurusan berhasil diperbarui!");
   }
+
+  async function handleDelete(idx) {
+    const target = list[idx];
+    if (target.role === 'super_admin') {
+      toast("Anda tidak bisa menghapus PIN Super Admin!");
+      setConfirm(null);
+      return;
+    }
+    const next = list.filter((_, i) => i !== idx);
+    const res = await updatePins(next);
+    if (res?.success) {
+      toast("PIN berhasil dihapus.");
+    } else {
+      toast("Gagal menghapus PIN.");
+    }
+    setConfirm(null);
+  }
+
+  const roleOptions = [
+    { value: "super_admin", label: "Super Admin" },
+    { value: "admin", label: "Admin TU" },
+    { value: "admin_bk", label: "Guru BK" },
+    { value: "major", label: "Admin Jurusan" }
+  ];
 
   return (
-    <div className="tab-form">
-      <h3 className="form-section-title">Ganti PIN Admin</h3>
-      <div className="form-group"><label>PIN Admin Lama</label><input type="password" inputMode="numeric" maxLength={4} value={oldPin} onChange={e => setOldPin(e.target.value.replace(/\D/g, ""))} placeholder="••••" /></div>
-      <div className="form-group"><label>PIN Admin Baru</label><input type="password" inputMode="numeric" maxLength={4} value={newPin} onChange={e => setNewPin(e.target.value.replace(/\D/g, ""))} placeholder="••••" /></div>
-      <div className="form-group"><label>Konfirmasi PIN Admin</label><input type="password" inputMode="numeric" maxLength={4} value={newPin2} onChange={e => setNewPin2(e.target.value.replace(/\D/g, ""))} placeholder="••••" /></div>
-      {err && <p className="form-error">{err}</p>}
-      <button className="btn-save" onClick={handleChangePin}><Lock size={14} /> Simpan PIN Admin</button>
-
-      <hr className="form-divider" style={{ marginTop: 32 }} />
-      <h3 className="form-section-title">PIN Login Jurusan</h3>
-      <p className="tab-desc">PIN ini hanya dapat dilihat dan diubah oleh Admin. Login menggunakan PIN jurusan hanya memberikan akses untuk menambahkan berita.</p>
-      <div className="major-pin-grid">
-        {Object.entries(majorPins).map(([major, pin]) => (
-          <div className="major-pin-row" key={major}>
-            <div><strong>{major}</strong><small>Akses: tambah berita</small></div>
-            <input type="password" inputMode="numeric" maxLength={4} value={pin} onChange={e => setMajorPins(prev => ({ ...prev, [major]: e.target.value.replace(/\D/g, "") }))} />
-          </div>
-        ))}
+    <div className="crud-list">
+      <div className="major-news-banner" style={{ background: "rgba(220, 38, 38, 0.1)", borderColor: "rgba(220, 38, 38, 0.2)", color: "#991b1b" }}>
+        <ShieldCheck size={18} />
+        <div>
+          <strong>Akses Khusus Super Admin</strong>
+          <span>Anda berada di area manajemen PIN. Harap jaga kerahasiaan daftar ini.</span>
+        </div>
       </div>
-      <button className="btn-save" onClick={handleSaveMajorPins}><ShieldCheck size={14} /> Simpan PIN Jurusan</button>
 
-      <hr className="form-divider" style={{ marginTop: 32 }} />
-      <h3 className="form-section-title">Sesi Admin</h3>
-      <button className="btn-danger-outline" onClick={onLogout}><LogOut size={14} /> Keluar dari Dashboard</button>
+      <div style={{ marginBottom: "20px", display: "flex", justifyContent: "flex-end" }}>
+        <button className="btn-danger-outline" onClick={onLogout}><LogOut size={14} /> Keluar dari Dashboard</button>
+      </div>
+
+      <h3 className="form-section-title" style={{ marginBottom: "16px" }}>Kelola Akses Login (PIN)</h3>
+
+      {list.map((item, idx) => (
+        <div key={item.id || `new-${idx}`} className={`crud-item ${editing === idx ? "crud-item--open" : ""}`}>
+          <div className="crud-item-header" onClick={() => setEditing(editing === idx ? null : idx)}>
+            <span className="crud-item-title">
+              {item.name || `Pengguna Baru ${idx + 1}`}
+              {item.role && <span className="crud-item-badge">{roleOptions.find(r => r.value === item.role)?.label || item.role}</span>}
+              {item.pin && <span className="crud-item-badge" style={{ background: '#fef3c7', color: '#b45309' }}>PIN: {item.pin}</span>}
+            </span>
+            <div className="crud-item-actions">
+              <button className="crud-btn-del" onClick={(e) => { e.stopPropagation(); setConfirm(idx); }}><Trash2 size={14} /></button>
+              <ChevronRight size={15} className={`crud-chevron ${editing === idx ? "crud-chevron--open" : ""}`} />
+            </div>
+          </div>
+
+          {editing === idx && (
+            <div className="crud-item-body">
+              <div className="form-group">
+                <label>Nama Pengguna / Jurusan</label>
+                <input type="text" value={item.name ?? ""} onChange={(e) => handleField(idx, "name", e.target.value)} placeholder="Misal: Tata Usaha, Guru BK, RPL" />
+              </div>
+              <div className="form-group">
+                <label>Role Akses</label>
+                <select value={item.role} onChange={(e) => handleField(idx, "role", e.target.value)} style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                  {roleOptions.map(opt => (
+                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                  ))}
+                </select>
+                <small className="form-hint">
+                  Super Admin (Akses semua), Admin TU (Semua kecuali BK/Pengaturan), Guru BK (Hanya BK), Admin Jurusan (Hanya tambah berita jurusan).
+                </small>
+              </div>
+              <div className="form-group">
+                <label>PIN (4 Digit Angka)</label>
+                <input type="text" inputMode="numeric" maxLength={4} value={item.pin ?? ""} onChange={(e) => handleField(idx, "pin", e.target.value.replace(/\D/g, ""))} placeholder="Misal: 1234" />
+              </div>
+              <button className="btn-save" onClick={handleSave}><Save size={14} /> Simpan Data Akses</button>
+            </div>
+          )}
+        </div>
+      ))}
+
+      <button className="btn-add" onClick={handleAdd}><Plus size={15} /> Tambah PIN Akses Baru</button>
+
+      {confirm !== null && (
+        <div className="modal-overlay" onClick={() => setConfirm(null)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <h3>Hapus akses ini?</h3>
+            <p>Pengguna dengan PIN ini tidak akan bisa login lagi.</p>
+            <div className="modal-actions">
+              <button className="btn-cancel" onClick={() => setConfirm(null)}>Batal</button>
+              <button className="btn-danger" onClick={() => handleDelete(confirm)}>Ya, Hapus</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
