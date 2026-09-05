@@ -2,193 +2,214 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { ArrowLeft, Send, ShieldAlert, Bot, User, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, Send, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
+
+function formatTime(dateString) {
+  if (!dateString) return "";
+  const d = new Date(dateString);
+  return d.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
+}
 
 export default function TicketChatPage() {
   const params = useParams();
+  const router = useRouter();
   const ticketId = params.ticketId;
   
+  const [userId, setUserId] = useState(null);
   const [messages, setMessages] = useState([]);
-  const [ticketStatus, setTicketStatus] = useState("PENDING");
   const [text, setText] = useState("");
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
+    const id = localStorage.getItem("bkAnonUserId");
+    if (!id) {
+      router.push("/konseling");
+    } else {
+      setUserId(id);
+    }
+  }, [router]);
+
+  useEffect(() => {
+    if (!ticketId || !userId) return;
+
+    const fetchMessages = async () => {
+      try {
+        const res = await fetch(`/api/bk/chat?ticketId=${ticketId}`);
+        const data = await res.json();
+        if (data.success) {
+          setMessages(data.messages);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
     fetchMessages();
-    const interval = setInterval(fetchMessages, 3000);
+    const interval = setInterval(fetchMessages, 3000); // Polling setiap 3 detik
     return () => clearInterval(interval);
-  }, []);
+  }, [ticketId, userId]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  async function fetchMessages() {
-    try {
-      // Fetch ticket status first to know if we are ACTIVE or PENDING
-      const tRes = await fetch(`/api/bk/tickets`);
-      const tData = await tRes.json();
-      if (tData.success) {
-        const currentTicket = tData.tickets.find(t => t.id === ticketId);
-        if (currentTicket) setTicketStatus(currentTicket.status);
-      }
-
-      const res = await fetch(`/api/bk/chat?ticketId=${ticketId}`);
-      const data = await res.json();
-      if (data.success) {
-        setMessages(data.messages);
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
-  async function sendMessage(e) {
+  async function handleSend(e) {
     e.preventDefault();
-    if (!text.trim()) return;
+    if (!text.trim() || !userId) return;
 
-    const value = text;
+    const currentText = text;
     setText("");
+
+    // Optimistic UI
+    const tempMsg = { sender: "USER", text: currentText, createdAt: new Date().toISOString() };
+    setMessages(prev => [...prev, tempMsg]);
 
     try {
       await fetch('/api/bk/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ticketId, text: value })
+        body: JSON.stringify({ ticketId, userId, text: currentText })
       });
-      fetchMessages();
+      // Will be synced on next poll
     } catch (err) {
       console.error(err);
     }
   }
 
   async function handleAction(actionType) {
+    if (!userId) return;
     try {
       await fetch('/api/bk/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ticketId, text: "", actionType, isAction: true })
+        body: JSON.stringify({ ticketId, userId, text: "", isAction: true, actionType })
       });
-      fetchMessages();
+      // Force refresh (optional, as poll will pick it up)
     } catch (err) {
       console.error(err);
     }
   }
 
   return (
-    <>
-      <div style={{ background: '#f1f5f9', minHeight: '90vh', padding: '2rem 1rem' }}>
-        <div style={{ maxWidth: '800px', margin: '0 auto', background: 'white', borderRadius: '16px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)', display: 'flex', flexDirection: 'column', height: '75vh' }}>
+    <div style={{ background: '#f1f5f9', minHeight: '100vh', display: 'flex', justifyContent: 'center' }}>
+      {/* Container WA Style */}
+      <div style={{ width: '100%', maxWidth: '800px', display: 'flex', flexDirection: 'column', background: '#efeae2', height: '100vh', boxShadow: '0 0 10px rgba(0,0,0,0.1)' }}>
+        
+        {/* Header ala WA */}
+        <div style={{ background: '#008069', color: 'white', padding: '12px 16px', display: 'flex', alignItems: 'center', gap: '12px', zIndex: 10 }}>
+          <Link href="/konseling" style={{ color: 'white', display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+            <ArrowLeft size={24} />
+          </Link>
+          <div style={{ width: '40px', height: '40px', background: '#e2e8f0', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+            <img src="/logo-smk.png" alt="Logo BK" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <span style={{ fontSize: '1.1rem', fontWeight: 'bold' }}>Guru BK SMKN 1</span>
+            <span style={{ fontSize: '0.8rem', opacity: 0.9 }}>Tersedia untuk membantu</span>
+          </div>
+        </div>
+
+        {/* Chat Area (Pattern WA) */}
+        <div style={{ 
+          flex: 1, 
+          padding: '1.5rem', 
+          overflowY: 'auto', 
+          display: 'flex', 
+          flexDirection: 'column', 
+          gap: '8px',
+          backgroundImage: 'url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png")', // Pola WA umum (transparan)
+          backgroundSize: '400px'
+        }}>
           
-          {/* Header */}
-          <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <Link href="/konseling" style={{ color: '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0.5rem', borderRadius: '50%', background: '#f8fafc' }}>
-              <ArrowLeft size={18} />
-            </Link>
-            <div style={{ flex: 1 }}>
-              <h1 style={{ fontSize: '1.125rem', fontWeight: 'bold', color: '#1e293b' }}>Ruang Konseling BK</h1>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.875rem', marginTop: '0.25rem' }}>
-                <span style={{ 
-                  width: '8px', height: '8px', borderRadius: '50%', 
-                  background: ticketStatus === 'ACTIVE' ? '#22c55e' : '#f59e0b' 
-                }} />
-                <span style={{ color: '#64748b' }}>
-                  {ticketStatus === 'ACTIVE' ? 'Terhubung dengan Guru BK' : 'Menunggu balasan Guru BK'}
-                </span>
-              </div>
-            </div>
+          <div style={{ textAlign: 'center', margin: '1rem 0' }}>
+            <span style={{ background: '#fff', padding: '6px 12px', borderRadius: '8px', fontSize: '0.8rem', color: '#555', boxShadow: '0 1px 1px rgba(0,0,0,0.05)' }}>
+              Ruang Konseling dienkripsi secara end-to-end (Simulasi). Identitas Anda disembunyikan kecuali Anda menyetujui.
+            </span>
           </div>
 
-          {/* Messages Area */}
-          <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', background: '#fafafa' }}>
-            {messages.length === 0 && (
-              <div style={{ margin: 'auto', textAlign: 'center', color: '#94a3b8' }}>
-                Belum ada percakapan. Mulailah dengan menceritakan masalahmu.
-              </div>
-            )}
-            
-            {messages.map(msg => {
-              if (msg.sender === 'SYSTEM') {
-                return (
-                  <div key={msg.id} style={{ alignSelf: 'center', background: '#fef3c7', color: '#92400e', padding: '0.5rem 1rem', borderRadius: '999px', fontSize: '0.8rem', fontWeight: '500' }}>
-                    {msg.text}
-                  </div>
-                );
-              }
+          {messages.map((msg, i) => {
+            const isMe = msg.sender === "USER";
+            const isSystem = msg.sender === "SYSTEM";
 
-              if (msg.isAction && msg.sender === 'ADMIN_BK') {
-                return (
-                  <div key={msg.id} style={{ alignSelf: 'center', background: '#fee2e2', border: '1px solid #fca5a5', padding: '1.5rem', borderRadius: '12px', maxWidth: '80%', textAlign: 'center' }}>
-                    <ShieldAlert size={32} color="#dc2626" style={{ margin: '0 auto 0.5rem auto' }} />
-                    <h3 style={{ color: '#991b1b', fontWeight: 'bold', marginBottom: '0.5rem' }}>Ajakan Sesi Offline</h3>
-                    <p style={{ color: '#7f1d1d', fontSize: '0.875rem', marginBottom: '1.25rem' }}>
-                      Guru BK mengajak kamu bertemu langsung. Jika setuju, identitasmu (Nama & NISN) akan diungkapkan kepada Guru BK.
-                    </p>
-                    <button 
-                      onClick={() => handleAction('AGREE_UNMASK')}
-                      style={{ background: '#dc2626', color: 'white', padding: '0.5rem 1.5rem', borderRadius: '8px', fontWeight: 'bold' }}
-                    >
-                      Setuju & Buka Identitas
-                    </button>
-                  </div>
-                );
-              }
-
-              const isUser = msg.sender === 'USER';
+            if (isSystem) {
               return (
-                <div key={msg.id} style={{ alignSelf: isUser ? 'flex-end' : 'flex-start', maxWidth: '75%', display: 'flex', gap: '0.75rem', flexDirection: isUser ? 'row-reverse' : 'row' }}>
-                  <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: isUser ? '#2563eb' : '#475569', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: 'white' }}>
-                    {isUser ? <User size={16} /> : <Bot size={16} />}
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: isUser ? 'flex-end' : 'flex-start' }}>
-                    <span style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '0.25rem', fontWeight: '500' }}>
-                      {isUser ? 'Kamu' : 'Guru BK'}
-                    </span>
-                    <div style={{ 
-                      padding: '0.875rem 1rem', 
-                      borderRadius: '12px',
-                      background: isUser ? '#2563eb' : 'white',
-                      color: isUser ? 'white' : '#1e293b',
-                      border: isUser ? 'none' : '1px solid #e2e8f0',
-                      boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
-                      lineHeight: '1.5',
-                      borderTopRightRadius: isUser ? '0' : '12px',
-                      borderTopLeftRadius: !isUser ? '0' : '12px'
-                    }}>
-                      {msg.text.split("\n").map((line, j, arr) => (
-                        <span key={j}>{line}{j < arr.length - 1 && <br />}</span>
-                      ))}
-                    </div>
-                  </div>
+                <div key={i} style={{ textAlign: 'center', margin: '1rem 0' }}>
+                  <span style={{ background: '#ffebb3', padding: '6px 12px', borderRadius: '8px', fontSize: '0.8rem', color: '#555', boxShadow: '0 1px 1px rgba(0,0,0,0.05)', display: 'inline-block', maxWidth: '85%' }}>
+                    ⚠️ {msg.text}
+                  </span>
                 </div>
               );
-            })}
-            <div ref={messagesEndRef} />
-          </div>
+            }
 
-          {/* Input Area */}
-          <div style={{ padding: '1rem 1.5rem', borderTop: '1px solid #e2e8f0', background: 'white', borderRadius: '0 0 16px 16px' }}>
-            <form onSubmit={sendMessage} style={{ display: 'flex', gap: '0.75rem' }}>
-              <input
-                type="text"
-                value={text}
-                onChange={e => setText(e.target.value)}
-                placeholder="Ketik balasan..."
-                style={{ flex: 1, padding: '0.875rem 1rem', borderRadius: '8px', border: '1px solid #cbd5e1', outline: 'none', background: '#f8fafc' }}
-              />
-              <button
-                type="submit"
-                disabled={!text.trim()}
-                style={{ background: '#2563eb', color: 'white', padding: '0 1.25rem', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: !text.trim() ? 0.5 : 1 }}
-              >
-                <Send size={20} />
-              </button>
-            </form>
-          </div>
+            if (msg.isAction && msg.text === "REQUEST_UNMASK") {
+              return (
+                <div key={i} style={{ alignSelf: 'flex-start', background: 'white', padding: '12px', borderRadius: '0 8px 8px 8px', maxWidth: '75%', boxShadow: '0 1px 1px rgba(0,0,0,0.1)', position: 'relative' }}>
+                  <div style={{ color: '#008069', fontSize: '0.8rem', fontWeight: 'bold', marginBottom: '4px' }}>Guru BK</div>
+                  <p style={{ margin: 0, fontSize: '0.95rem' }}>Guru BK meminta untuk membuka identitas (Unmask) agar bisa dilakukan sesi tatap muka secara offline.</p>
+                  <button onClick={() => handleAction('AGREE_UNMASK')} style={{ marginTop: '10px', background: '#008069', color: 'white', padding: '8px 12px', borderRadius: '6px', fontSize: '0.9rem', fontWeight: 'bold', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <CheckCircle2 size={16} /> Setujui & Buka Identitas
+                  </button>
+                  <div style={{ textAlign: 'right', fontSize: '0.7rem', color: '#888', marginTop: '6px' }}>{formatTime(msg.createdAt)}</div>
+                </div>
+              );
+            }
 
+            return (
+              <div key={i} style={{ 
+                alignSelf: isMe ? 'flex-end' : 'flex-start', 
+                background: isMe ? '#d9fdd3' : 'white', 
+                padding: '8px 12px', 
+                borderRadius: isMe ? '8px 0 8px 8px' : '0 8px 8px 8px', 
+                maxWidth: '75%', 
+                boxShadow: '0 1px 1px rgba(0,0,0,0.1)',
+                position: 'relative'
+              }}>
+                {!isMe && <div style={{ color: '#008069', fontSize: '0.8rem', fontWeight: 'bold', marginBottom: '4px' }}>Guru BK</div>}
+                
+                <div style={{ fontSize: '0.95rem', color: '#111', wordWrap: 'break-word', paddingBottom: '12px' }}>
+                  {msg.text.split("\n").map((line, j, arr) => (
+                    <span key={j}>{line}{j < arr.length - 1 && <br />}</span>
+                  ))}
+                </div>
+                
+                <div style={{ position: 'absolute', bottom: '4px', right: '8px', fontSize: '0.7rem', color: '#888' }}>
+                  {formatTime(msg.createdAt)}
+                </div>
+              </div>
+            );
+          })}
+          <div ref={messagesEndRef} />
         </div>
+
+        {/* Input Area (Bottom) */}
+        <div style={{ background: '#f0f2f5', padding: '10px 16px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <form onSubmit={handleSend} style={{ display: 'flex', width: '100%', gap: '10px' }}>
+            <input 
+              value={text}
+              onChange={e => setText(e.target.value)}
+              placeholder="Ketik pesan..."
+              style={{ flex: 1, padding: '12px 16px', borderRadius: '24px', border: 'none', outline: 'none', fontSize: '1rem' }}
+            />
+            <button type="submit" disabled={!text.trim()} style={{ 
+              background: text.trim() ? '#00a884' : '#cbd5e1', 
+              color: 'white', 
+              width: '48px', 
+              height: '48px', 
+              borderRadius: '50%', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
+              border: 'none',
+              cursor: text.trim() ? 'pointer' : 'default',
+              transition: 'background 0.2s'
+            }}>
+              <Send size={20} style={{ marginLeft: '4px' }} />
+            </button>
+          </form>
+        </div>
+
       </div>
-    </>
+    </div>
   );
 }

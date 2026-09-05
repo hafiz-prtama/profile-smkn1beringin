@@ -98,13 +98,12 @@ model User {
   email     String?
   password  String   // Hashed or plaintext depending on implementation, but let's assume simple implementation for now
   role      String   @default("user")
-  tickets   ConsultationTicket[]
 }
 
 model ConsultationTicket {
   id          String   @id @default(cuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id])
+  userId      String   // Diisi dari anonymous token (client localStorage)
+  userType    String   @default("siswa") // "siswa" atau "orang_tua"
   pseudoId    String
   categories  String
   complaint   String   @db.Text

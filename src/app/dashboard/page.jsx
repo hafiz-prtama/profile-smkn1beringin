@@ -1496,10 +1496,16 @@ function TabBK({ toast }) {
         },
         body: JSON.stringify({ ticketId: selectedTicketId, text: "", actionType, isAction: true })
       });
-      fetchMessages();
+      if (actionType === 'DELETE_TICKET') {
+        setSelectedTicketId(null);
+        setMessages([]);
+        toast("Konsultasi dihapus / ditolak");
+      } else {
+        fetchMessages();
+        if (actionType === 'ACCEPT_TICKET') toast("Konsultasi diterima");
+        if (actionType === 'AGREE_UNMASK') toast("Permintaan dikirim ke siswa");
+      }
       fetchTickets();
-      if (actionType === 'ACCEPT_TICKET') toast("Konsultasi diterima");
-      if (actionType === 'AGREE_UNMASK') toast("Permintaan dikirim ke siswa");
     } catch (err) {
       console.error(err);
     }
@@ -1530,8 +1536,13 @@ function TabBK({ toast }) {
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                  <strong style={{ color: '#1e293b' }}>
-                    {t.isUnmasked && t.user ? `${t.user.name} (${t.user.nisn})` : t.pseudoId}
+                  <strong style={{ color: '#1e293b', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    {t.pseudoId}
+                    {t.userType === 'orang_tua' ? (
+                      <span style={{ fontSize: '0.65rem', background: '#10b981', color: 'white', padding: '2px 6px', borderRadius: '4px' }}>Orang Tua</span>
+                    ) : (
+                      <span style={{ fontSize: '0.65rem', background: '#2563eb', color: 'white', padding: '2px 6px', borderRadius: '4px' }}>Siswa</span>
+                    )}
                   </strong>
                   <span style={{ fontSize: '0.75rem', padding: '0.1rem 0.5rem', borderRadius: '4px', background: t.status === 'PENDING' ? '#fef3c7' : (t.status === 'ACTIVE' ? '#dcfce7' : '#f1f5f9') }}>
                     {t.status}
@@ -1552,8 +1563,13 @@ function TabBK({ toast }) {
           <>
             <div style={{ padding: '1rem', borderBottom: '1px solid #e2e8f0', background: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
-                <h3 style={{ margin: 0, fontSize: '1rem' }}>
-                  {selectedTicket.isUnmasked && selectedTicket.user ? `${selectedTicket.user.name} (${selectedTicket.user.nisn})` : selectedTicket.pseudoId}
+                <h3 style={{ margin: 0, fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  {selectedTicket.pseudoId}
+                  {selectedTicket.userType === 'orang_tua' ? (
+                    <span style={{ fontSize: '0.7rem', background: '#10b981', color: 'white', padding: '2px 8px', borderRadius: '12px' }}>Orang Tua</span>
+                  ) : (
+                    <span style={{ fontSize: '0.7rem', background: '#2563eb', color: 'white', padding: '2px 8px', borderRadius: '12px' }}>Siswa</span>
+                  )}
                 </h3>
                 <div style={{ fontSize: '0.8rem', color: '#64748b' }}>Kategori: {
                   (() => {
@@ -1573,6 +1589,9 @@ function TabBK({ toast }) {
                     Ajukan Sesi Offline
                   </button>
                 )}
+                <button onClick={() => handleAction('DELETE_TICKET')} style={{ background: '#ef4444', color: 'white', padding: '0.5rem 1rem', borderRadius: '6px', fontWeight: 'bold' }}>
+                  Hapus / Deny
+                </button>
               </div>
             </div>
 

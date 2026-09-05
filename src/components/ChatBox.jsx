@@ -94,12 +94,12 @@ export default function ChatBox() {
     setText("");
     
     // Intervensi untuk opsi Layanan Konseling BK
-    if (value === "Layanan Konseling BK") {
+    if (value === "Konsultasi Bimbingan Konseling") {
       const userMsg = { sender: "USER", text: value, createdAt: new Date().toISOString() };
       const botMsg = { 
         sender: "BOT", 
-        text: "Untuk menjaga kerahasiaan dan privasi kamu, layanan Bimbingan Konseling dilakukan di ruang tertutup. Silakan klik tombol di bawah ini untuk masuk ke Ruang Konseling BK.", 
-        isBkLink: true,
+        text: "Pilih untuk masuk ke Ruang Konseling Bimbingan Konseling secara anonim:", 
+        isBkOptions: true,
         createdAt: new Date().toISOString() 
       };
       setMessages(prev => [...prev, userMsg, botMsg]);
@@ -207,8 +207,8 @@ export default function ChatBox() {
                 {QUICK_QUESTIONS.map((q, i) => (
                   <button key={i} className="chat-quick-pill" onClick={() => sendMessage(null, q)}>{q}</button>
                 ))}
-                <button className="chat-quick-pill" style={{ background: '#3b82f6', color: 'white', borderColor: '#2563eb' }} onClick={() => sendMessage(null, "Layanan Konseling BK")}>
-                  Layanan Konseling BK
+                <button className="chat-quick-pill" style={{ background: '#3b82f6', color: 'white', borderColor: '#2563eb' }} onClick={() => sendMessage(null, "Konsultasi Bimbingan Konseling")}>
+                  Konsultasi Bimbingan Konseling
                 </button>
               </div>
             )}
@@ -230,10 +230,13 @@ export default function ChatBox() {
                       {msg.text.split("\n").map((line, j, arr) => (
                         <span key={j}>{line}{j < arr.length - 1 && <br />}</span>
                       ))}
-                      {msg.isBkLink && (
-                        <div style={{ marginTop: '10px' }}>
-                          <Link href="/konseling" style={{ display: 'inline-block', padding: '8px 12px', background: '#2563eb', color: 'white', borderRadius: '6px', textDecoration: 'none', fontSize: '13px', fontWeight: 'bold' }}>
-                            Ruang Konseling BK
+                      {msg.isBkOptions && (
+                        <div style={{ marginTop: '10px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                          <Link href="/konseling?type=siswa" style={{ display: 'inline-block', padding: '6px 10px', background: '#2563eb', color: 'white', borderRadius: '6px', textDecoration: 'none', fontSize: '13px', fontWeight: 'bold' }}>
+                            Sebagai Siswa
+                          </Link>
+                          <Link href="/konseling?type=orang_tua" style={{ display: 'inline-block', padding: '6px 10px', background: '#10b981', color: 'white', borderRadius: '6px', textDecoration: 'none', fontSize: '13px', fontWeight: 'bold' }}>
+                            Sebagai Orang Tua
                           </Link>
                         </div>
                       )}
@@ -250,8 +253,8 @@ export default function ChatBox() {
                 {QUICK_QUESTIONS.map((q, i) => (
                   <button key={i} className="chat-quick-pill" onClick={() => sendMessage(null, q)}>{q}</button>
                 ))}
-                <button className="chat-quick-pill" style={{ background: '#3b82f6', color: 'white', borderColor: '#2563eb' }} onClick={() => sendMessage(null, "Layanan Konseling BK")}>
-                  Layanan Konseling BK
+                <button className="chat-quick-pill" style={{ background: '#3b82f6', color: 'white', borderColor: '#2563eb' }} onClick={() => sendMessage(null, "Konsultasi Bimbingan Konseling")}>
+                  Konsultasi Bimbingan Konseling
                 </button>
               </div>
             )}

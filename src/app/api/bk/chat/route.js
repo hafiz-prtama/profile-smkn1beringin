@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { verifyToken } from '@/lib/auth';
 
 export async function GET(request) {
   try {
@@ -21,33 +20,25 @@ export async function GET(request) {
 
 export async function POST(request) {
   try {
-    const token = request.cookies.get('bk_token')?.value;
     const adminRole = request.headers.get('x-admin-role'); 
-
-    let userId = null;
-    let userRole = null;
-    if (token) {
-      const payload = await verifyToken(token);
-      if (payload) {
-        userId = payload.id;
-        userRole = payload.role;
-      }
-    }
-
     const isAdmin = adminRole === 'admin_bk' || adminRole === 'super_admin';
 
-    if (!isAdmin && userRole !== 'user') {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
-    }
-
-    const { ticketId, text, isAction, actionType } = await request.json();
+    const { ticketId, text, isAction, actionType, userId } = await request.json();
+    
     if (!ticketId) return NextResponse.json({ error: "No ticketId" }, { status: 400 });
 
     const ticket = await prisma.consultationTicket.findUnique({ where: { id: ticketId } });
     if (!ticket) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
+    // Verifikasi kepemilikan jika bukan admin
+    if (!isAdmin) {
+      if (ticket.userId !== userId) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+      }
+    }
+
     // Handle Unmasking Action Confirmation from User
-    if (userRole === 'user' && actionType === 'AGREE_UNMASK') {
+    if (!isAdmin && actionType === 'AGREE_UNMASK') {
       await prisma.consultationTicket.update({
         where: { id: ticketId },
         data: { isUnmasked: true }
@@ -57,7 +48,7 @@ export async function POST(request) {
         data: {
           ticketId,
           sender: "SYSTEM",
-          text: "Siswa telah menyetujui sesi offline. Identitas telah dibuka kepada Guru BK."
+          text: "Pengguna telah menyetujui sesi tatap muka (offline)."
         }
       });
       return NextResponse.json({ success: true });
@@ -70,6 +61,14 @@ export async function POST(request) {
         data: { status: 'ACTIVE' }
       });
       return NextResponse.json({ success: true });
+    }
+
+    // Handle Deleting/Rejecting Ticket by Admin
+    if (isAdmin && actionType === 'DELETE_TICKET') {
+      await prisma.consultationTicket.delete({
+        where: { id: ticketId }
+      });
+      return NextResponse.json({ success: true, deleted: true });
     }
 
     // Normal message logic
