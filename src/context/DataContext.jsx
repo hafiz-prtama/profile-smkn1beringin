@@ -39,7 +39,7 @@ export function DataProvider({ children }) {
         if (newsRes.ok) setNewsState(await newsRes.json());
         if (facRes.ok) setFacilitiesState(await facRes.json());
       } catch (err) {
-        console.error("Failed to fetch initial data", err);
+        console.error("Failed to fetch initial data", err);sas
       }
     };
     loadData();

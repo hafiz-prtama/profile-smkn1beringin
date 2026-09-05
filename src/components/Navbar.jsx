@@ -2,14 +2,15 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Menu, X, ChevronDown } from "lucide-react";
+import RealTimeClock from "@/components/RealTimeClock";
 
 // ─── Daftar Link Navigasi ────────────────────────────────────────────────────
 const NAV_LINKS = [
-  { to: "/",          label: "Beranda",   sectionId: "beranda"   },
-  { to: "/profil",    label: "Profil",    sectionId: "profil"    },
-  { to: "/jurusan",   label: "Jurusan",   sectionId: "jurusan"   },
-  { to: "/prestasi",  label: "Prestasi",  sectionId: "prestasi"  },
-  { to: "/berita",    label: "Berita",    sectionId: "berita"    },
+  { to: "/", label: "Beranda", sectionId: "beranda" },
+  { to: "/profil", label: "Profil", sectionId: "profil" },
+  { to: "/jurusan", label: "Jurusan", sectionId: "jurusan" },
+  { to: "/prestasi", label: "Prestasi", sectionId: "prestasi" },
+  { to: "/berita", label: "Berita", sectionId: "berita" },
   { to: "/fasilitas", label: "Fasilitas", sectionId: "fasilitas" },
 ];
 
@@ -21,15 +22,15 @@ const SCROLL_HYSTERESIS = 20;
 
 // ─── Komponen Navbar ─────────────────────────────────────────────────────────
 export default function Navbar() {
-  const [menuOpen,       setMenuOpen]       = useState(false);
-  const [floating,       setFloating]       = useState(false);
-  const [activeSection,  setActiveSection]  = useState("beranda");
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [floating, setFloating] = useState(false);
+  const [activeSection, setActiveSection] = useState("beranda");
 
-  const rafRef      = useRef(null);
+  const rafRef = useRef(null);
   const observerRef = useRef(null);
-  const pathname    = usePathname();
-  const router      = useRouter();
-  const isHome      = pathname === "/";
+  const pathname = usePathname();
+  const router = useRouter();
+  const isHome = pathname === "/";
 
   // ── Deteksi scroll floating ──────────────────────────────────────────────
   useEffect(() => {
@@ -38,8 +39,8 @@ export default function Navbar() {
       rafRef.current = requestAnimationFrame(() => {
         const y = window.scrollY;
         setFloating((prev) => {
-          if (!prev && y > SCROLL_THRESHOLD)                    return true;
-          if ( prev && y < SCROLL_THRESHOLD - SCROLL_HYSTERESIS) return false;
+          if (!prev && y > SCROLL_THRESHOLD) return true;
+          if (prev && y < SCROLL_THRESHOLD - SCROLL_HYSTERESIS) return false;
           return prev;
         });
       });
@@ -142,6 +143,11 @@ export default function Navbar() {
             <span>DELI SERDANG</span>
           </div>
         </Link>
+
+        {/* ── Jam Realtime ── */}
+        <div style={{ marginLeft: 'auto', marginRight: '16px' }} className="nav-clock-wrapper">
+          <RealTimeClock />
+        </div>
 
         {/* ── Tombol Hamburger (Mobile) ── */}
         <button

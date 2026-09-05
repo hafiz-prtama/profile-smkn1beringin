@@ -6,7 +6,7 @@ import {
   Building2, BookOpen, Settings, Eye,
   LogOut, Plus, Trash2, Save, Lock,
   ChevronRight, GraduationCap, Check, X, UserRound, UserCog, BarChart3, ShieldCheck, Pencil, Minus,
-  Upload, ImagePlus, Camera, MessageCircle, Send
+  Upload, ImagePlus, Camera, MessageCircle, Send, School
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -1224,7 +1224,7 @@ function TabChat({ toast }) {
 
   const fetchSessions = async () => {
     try {
-      const res = await fetch("/api/chat/session");
+      const res = await fetch("/api/chat");
       const data = await res.json();
       if (data.success) {
         setSessions(data.sessions);
@@ -1395,6 +1395,8 @@ function TabChat({ toast }) {
 }
 
 // ─── Dashboard utama ──────────────────────────────────────────────────────────
+import RealTimeClock from '@/components/RealTimeClock';
+
 export default function Dashboard() {
   const { getSession, getRole, setSession, clearSession } = useData();
   const router = useRouter();
@@ -1458,10 +1460,13 @@ export default function Dashboard() {
       <aside className="admin-sidebar">
         <div className="admin-brand">
           <img src="/logo-smk.png" alt="Logo" />
-          <div>
+          <div style={{ flex: 1 }}>
             <strong>SMK N 1 Beringin</strong>
             <span>{role?.type === "major" ? `Panel ${role.name}` : "Admin Panel"}</span>
           </div>
+        </div>
+        <div style={{ padding: "0 18px 15px 18px", borderBottom: "1px solid rgba(255, 255, 255, 0.07)", marginBottom: "10px" }}>
+          <RealTimeClock className="sidebar-clock" />
         </div>
 
         <nav className="admin-nav">
