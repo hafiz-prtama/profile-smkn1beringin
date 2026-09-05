@@ -6,22 +6,22 @@ import {
   Building2, BookOpen, Settings, Eye,
   LogOut, Plus, Trash2, Save, Lock,
   ChevronRight, GraduationCap, Check, X, UserRound, UserCog, BarChart3, ShieldCheck, Pencil, Minus,
-  Upload, ImagePlus, Camera,
+  Upload, ImagePlus, Camera, MessageCircle, Send
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useData } from "@/context/DataContext";
 
-// ─── Sidebar nav items ────────────────────────────────────────────────────────
 const NAV_ITEMS = [
-  { id: "overview",    icon: <LayoutDashboard size={17} />, label: "Overview"        },
-  { id: "data-sekolah",icon: <BarChart3 size={17} />,       label: "Data Siswa & Guru" },
-  { id: "profil",      icon: <Users size={17} />,           label: "Profil Sekolah"  },
-  { id: "jurusan",     icon: <BookOpen size={17} />,        label: "Jurusan"         },
-  { id: "prestasi",    icon: <Trophy size={17} />,          label: "Prestasi"        },
-  { id: "berita",      icon: <Newspaper size={17} />,       label: "Berita"          },
-  { id: "fasilitas",   icon: <Building2 size={17} />,       label: "Fasilitas"       },
-  { id: "pengaturan",  icon: <Settings size={17} />,        label: "Pengaturan"      },
+  { id: "overview", icon: <LayoutDashboard size={17} />, label: "Overview" },
+  { id: "data-sekolah", icon: <BarChart3 size={17} />, label: "Data Siswa & Guru" },
+  { id: "profil", icon: <Users size={17} />, label: "Profil Sekolah" },
+  { id: "jurusan", icon: <BookOpen size={17} />, label: "Jurusan" },
+  { id: "prestasi", icon: <Trophy size={17} />, label: "Prestasi" },
+  { id: "berita", icon: <Newspaper size={17} />, label: "Berita" },
+  { id: "fasilitas", icon: <Building2 size={17} />, label: "Fasilitas" },
+  { id: "chat", icon: <MessageCircle size={17} />, label: "Pesan Siswa" },
+  { id: "pengaturan", icon: <Settings size={17} />, label: "Pengaturan" },
 ];
 
 // ─── Tombol Tambah mengambang ────────────────────────────────────────────────
@@ -83,9 +83,9 @@ function Toast({ msg, onDone }) {
 
 // ─── PIN Login Screen ─────────────────────────────────────────────────────────
 function PinLogin({ onSuccess }) {
-  const [digits, setDigits]   = useState(["", "", "", ""]);
-  const [error,  setError]    = useState(false);
-  const [shake,  setShake]    = useState(false);
+  const [digits, setDigits] = useState(["", "", "", ""]);
+  const [error, setError] = useState(false);
+  const [shake, setShake] = useState(false);
 
   async function handleDigit(val) {
     setError(false);
@@ -97,26 +97,26 @@ function PinLogin({ onSuccess }) {
 
     if (filled.length === 3) {
       const entered = [...next].join("");
-      
+
       try {
         const res = await fetch('/api/auth', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ pin: entered })
         });
-        
+
         const data = await res.json();
         if (data.success) {
           onSuccess(data.role);
         } else {
           setShake(true);
           setError(true);
-          setTimeout(() => { setDigits(["","","",""]); setShake(false); }, 600);
+          setTimeout(() => { setDigits(["", "", "", ""]); setShake(false); }, 600);
         }
       } catch (err) {
         setShake(true);
         setError(true);
-        setTimeout(() => { setDigits(["","","",""]); setShake(false); }, 600);
+        setTimeout(() => { setDigits(["", "", "", ""]); setShake(false); }, 600);
       }
     }
   }
@@ -130,7 +130,7 @@ function PinLogin({ onSuccess }) {
     setError(false);
   }
 
-  const PAD = ["1","2","3","4","5","6","7","8","9","","0","⌫"];
+  const PAD = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "", "0", "⌫"];
 
   return (
     <div className="pin-screen">
@@ -153,11 +153,11 @@ function PinLogin({ onSuccess }) {
         <div className="pin-pad">
           {PAD.map((k, i) => (
             k === "" ? <div key={i} /> :
-            k === "⌫" ? (
-              <button key={i} className="pin-key pin-key--del" onClick={handleDel}><X size={18}/></button>
-            ) : (
-              <button key={i} className="pin-key" onClick={() => handleDigit(k)}>{k}</button>
-            )
+              k === "⌫" ? (
+                <button key={i} className="pin-key pin-key--del" onClick={handleDel}><X size={18} /></button>
+              ) : (
+                <button key={i} className="pin-key" onClick={() => handleDigit(k)}>{k}</button>
+              )
           ))}
         </div>
       </div>
@@ -197,9 +197,9 @@ function TabOverview({ setTab }) {
         ))}
       </div>
       <div className="admin-quick-grid">
-        <button onClick={() => setTab("data-sekolah")}><GraduationCap size={18}/><span><strong>Data Siswa & Guru</strong><small>Ubah jumlah data tenaga pendidik dan siswa.</small></span><ChevronRight size={15}/></button>
-        <button onClick={() => setTab("prestasi")}><Trophy size={18}/><span><strong>Kelola Prestasi</strong><small>Tambah, edit, atau hapus prestasi sekolah.</small></span><ChevronRight size={15}/></button>
-        <button onClick={() => setTab("berita")}><Newspaper size={18}/><span><strong>Kelola Berita</strong><small>Perbarui berita dan pengumuman sekolah.</small></span><ChevronRight size={15}/></button>
+        <button onClick={() => setTab("data-sekolah")}><GraduationCap size={18} /><span><strong>Data Siswa & Guru</strong><small>Ubah jumlah data tenaga pendidik dan siswa.</small></span><ChevronRight size={15} /></button>
+        <button onClick={() => setTab("prestasi")}><Trophy size={18} /><span><strong>Kelola Prestasi</strong><small>Tambah, edit, atau hapus prestasi sekolah.</small></span><ChevronRight size={15} /></button>
+        <button onClick={() => setTab("berita")}><Newspaper size={18} /><span><strong>Kelola Berita</strong><small>Perbarui berita dan pengumuman sekolah.</small></span><ChevronRight size={15} /></button>
       </div>
     </div>
   );
@@ -246,16 +246,16 @@ function TabDataSekolah({ toast }) {
   }
 
   const editors = [
-    { title: "DATA SISWA", description: "Jumlah siswa aktif", value: students, setValue: setStudents, icon: <GraduationCap size={22}/>, tone: "student", suffix: "+" },
-    { title: "DATA GURU", description: "Jumlah guru / tenaga pendidik", value: teachers, setValue: setTeachers, icon: <UserCog size={22}/>, tone: "teacher", suffix: "+" },
-    { title: "DATA PRESTASI", description: "Jumlah prestasi yang ditampilkan", value: prestasi, setValue: setPrestasi, icon: <Trophy size={22}/>, tone: "achievement", suffix: "+" },
-    { title: "DATA JURUSAN", description: "Jumlah program keahlian", value: jurusan, setValue: setJurusan, icon: <BookOpen size={22}/>, tone: "major", suffix: "" },
+    { title: "DATA SISWA", description: "Jumlah siswa aktif", value: students, setValue: setStudents, icon: <GraduationCap size={22} />, tone: "student", suffix: "+" },
+    { title: "DATA GURU", description: "Jumlah guru / tenaga pendidik", value: teachers, setValue: setTeachers, icon: <UserCog size={22} />, tone: "teacher", suffix: "+" },
+    { title: "DATA PRESTASI", description: "Jumlah prestasi yang ditampilkan", value: prestasi, setValue: setPrestasi, icon: <Trophy size={22} />, tone: "achievement", suffix: "+" },
+    { title: "DATA JURUSAN", description: "Jumlah program keahlian", value: jurusan, setValue: setJurusan, icon: <BookOpen size={22} />, tone: "major", suffix: "" },
   ];
 
   return (
     <div className="data-management">
       <div className="data-intro">
-        <div className="data-intro-icon"><BarChart3 size={22}/></div>
+        <div className="data-intro-icon"><BarChart3 size={22} /></div>
         <div><h2>Data Statistik Beranda</h2><p>Ubah angka yang tampil pada statistik di bagian hero website.</p></div>
       </div>
 
@@ -269,9 +269,9 @@ function TabDataSekolah({ toast }) {
             <strong>{normalize(item.value).toLocaleString("id-ID")}{item.suffix}</strong>
             <label>{item.description}</label>
             <div className="number-control">
-              <button type="button" onClick={() => item.setValue(Math.max(0, normalize(item.value) - 1))}><Minus size={16}/></button>
+              <button type="button" onClick={() => item.setValue(Math.max(0, normalize(item.value) - 1))}><Minus size={16} /></button>
               <input type="number" min="0" value={item.value} onChange={e => item.setValue(e.target.value)} />
-              <button type="button" onClick={() => item.setValue(normalize(item.value) + 1)}><Plus size={16}/></button>
+              <button type="button" onClick={() => item.setValue(normalize(item.value) + 1)}><Plus size={16} /></button>
             </div>
           </div>
         ))}
@@ -279,7 +279,7 @@ function TabDataSekolah({ toast }) {
 
       <div className="data-save-row">
         <div><strong>Perubahan belum tersimpan?</strong><span>Klik simpan setelah semua angka sudah benar.</span></div>
-        <button className="btn-save" onClick={saveCounts}><Save size={15}/> Simpan Statistik Beranda</button>
+        <button className="btn-save" onClick={saveCounts}><Save size={15} /> Simpan Statistik Beranda</button>
       </div>
     </div>
   );
@@ -416,7 +416,7 @@ function TabProfil({ toast }) {
 
 // ─── CRUD list generik ────────────────────────────────────────────────────────
 function CrudList({ items, onSave, onDelete, fields, createEmpty, toast }) {
-  const [list, setList]       = useState(items);
+  const [list, setList] = useState(items);
   const [editing, setEditing] = useState(null); // index yang sedang diedit
   const [confirm, setConfirm] = useState(null); // index yang mau dihapus
 
@@ -502,7 +502,7 @@ function CrudList({ items, onSave, onDelete, fields, createEmpty, toast }) {
 // ─── Tab: Jurusan ─────────────────────────────────────────────────────────────
 function TabJurusan({ toast, autoAddKey = 0 }) {
   const { majors, updateMajors } = useData();
-  const [list,    setList]    = useState(majors);
+  const [list, setList] = useState(majors);
   const [editing, setEditing] = useState(null);
   const [confirm, setConfirm] = useState(null);
 
@@ -624,7 +624,7 @@ function TabJurusan({ toast, autoAddKey = 0 }) {
 // ─── Tab: Prestasi ────────────────────────────────────────────────────────────
 function TabPrestasi({ toast, autoAddKey = 0 }) {
   const { achievements, updateAchievements } = useData();
-  const [list,    setList]    = useState(achievements);
+  const [list, setList] = useState(achievements);
   const [editing, setEditing] = useState(null);
   const [confirm, setConfirm] = useState(null);
 
@@ -908,7 +908,7 @@ function TabBerita({ toast, role, autoAddKey = 0 }) {
     <div className="crud-list">
       {isMajor && (
         <div className="major-news-banner">
-          <ShieldCheck size={18}/>
+          <ShieldCheck size={18} />
           <div>
             <strong>Mode Jurusan: {role.name}</strong>
             <span>Anda hanya dapat melihat, menambah, mengedit, dan menghapus berita milik {role.name}. Berita jurusan lain tidak dapat Anda kelola.</span>
@@ -1045,7 +1045,7 @@ function TabBerita({ toast, role, autoAddKey = 0 }) {
 // ─── Tab: Fasilitas ───────────────────────────────────────────────────────────
 function TabFasilitas({ toast, autoAddKey = 0 }) {
   const { facilities, updateFacilities } = useData();
-  const [list,    setList]    = useState(facilities);
+  const [list, setList] = useState(facilities);
   const [editing, setEditing] = useState(null);
   const [confirm, setConfirm] = useState(null);
 
@@ -1215,17 +1215,201 @@ function TabPengaturan({ toast, onLogout }) {
   );
 }
 
+// ─── Tab: Chat Siswa ────────────────────────────────────────────────────────────
+function TabChat({ toast }) {
+  const [sessions, setSessions] = useState([]);
+  const [selectedSession, setSelectedSession] = useState(null);
+  const [text, setText] = useState("");
+  const messagesEndRef = useRef(null);
+
+  const fetchSessions = async () => {
+    try {
+      const res = await fetch("/api/chat/session");
+      const data = await res.json();
+      if (data.success) {
+        setSessions(data.sessions);
+        if (selectedSession) {
+          const updated = data.sessions.find(s => s.id === selectedSession.id);
+          if (updated) setSelectedSession(updated);
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchSessions();
+    const interval = setInterval(fetchSessions, 3000);
+    return () => clearInterval(interval);
+  }, [selectedSession]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [selectedSession?.messages]);
+
+  async function handleAction(action) {
+    if (!selectedSession) return;
+    try {
+      const res = await fetch(`/api/chat/session/${selectedSession.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action })
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast(action === "ACCEPT" ? "Chat diterima" : "Sesi chat diakhiri/ditolak");
+        if (action === "REJECT" || action === "END") {
+          setSelectedSession(null);
+        }
+        fetchSessions();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function sendMessage(e) {
+    e.preventDefault();
+    if (!text.trim() || !selectedSession) return;
+    const value = text.trim();
+    setText("");
+
+    try {
+      await fetch("/api/chat/message", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: selectedSession.userId, text: value, sender: "ADMIN" })
+      });
+      fetchSessions();
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  return (
+    <div style={{ display: "flex", gap: "20px", height: "calc(100vh - 120px)" }}>
+      {/* Sidebar List Chat */}
+      <div style={{ width: "300px", borderRight: "1px solid #e2e8f0", paddingRight: "10px", display: "flex", flexDirection: "column" }}>
+        <h3 style={{ marginBottom: "15px", fontSize: "16px", fontWeight: "600" }}>Pesan Masuk</h3>
+        <div style={{ overflowY: "auto", flex: 1 }}>
+          {sessions.length === 0 ? (
+            <p style={{ color: "#64748b", fontSize: "13px" }}>Belum ada pesan custom.</p>
+          ) : (
+            sessions.map(s => (
+              <div
+                key={s.id}
+                onClick={() => setSelectedSession(s)}
+                style={{
+                  padding: "12px",
+                  borderBottom: "1px solid #f1f5f9",
+                  cursor: "pointer",
+                  background: selectedSession?.id === s.id ? "#f8fafc" : "transparent",
+                  borderLeft: selectedSession?.id === s.id ? "3px solid #3b82f6" : "3px solid transparent"
+                }}
+              >
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}>
+                  <strong style={{ fontSize: "13px" }}>ID: {s.userId.substring(0, 8)}...</strong>
+                  <span style={{ fontSize: "11px", color: s.status === 'PENDING' ? '#eab308' : '#22c55e' }}>
+                    {s.status}
+                  </span>
+                </div>
+                <div style={{ fontSize: "12px", color: "#64748b", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                  {s.messages?.[s.messages.length - 1]?.text || "Tidak ada pesan"}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+
+      {/* Main Chat Area */}
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", background: "#f8fafc", borderRadius: "8px", overflow: "hidden", border: "1px solid #e2e8f0" }}>
+        {selectedSession ? (
+          <>
+            <div style={{ padding: "15px 20px", background: "white", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div>
+                <strong style={{ display: "block" }}>Chat dari User: {selectedSession.userId.substring(0, 10)}</strong>
+                <span style={{ fontSize: "12px", color: "#64748b" }}>Status: {selectedSession.status}</span>
+              </div>
+              <div style={{ display: "flex", gap: "8px" }}>
+                {selectedSession.status === 'PENDING' && (
+                  <>
+                    <button onClick={() => handleAction('ACCEPT')} style={{ padding: "6px 12px", background: "#22c55e", color: "white", borderRadius: "4px", fontSize: "12px", fontWeight: "600" }}>Terima (ACC)</button>
+                    <button onClick={() => handleAction('REJECT')} style={{ padding: "6px 12px", background: "#ef4444", color: "white", borderRadius: "4px", fontSize: "12px", fontWeight: "600" }}>Tolak</button>
+                  </>
+                )}
+                {selectedSession.status === 'ACTIVE' && (
+                  <button onClick={() => handleAction('END')} style={{ padding: "6px 12px", background: "#ef4444", color: "white", borderRadius: "4px", fontSize: "12px", fontWeight: "600" }}>Akhiri Chat</button>
+                )}
+              </div>
+            </div>
+
+            <div style={{ flex: 1, padding: "20px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "12px" }}>
+              {selectedSession.messages?.map((msg, i) => (
+                <div key={i} style={{ alignSelf: msg.sender === 'ADMIN' ? 'flex-end' : 'flex-start', maxWidth: "70%" }}>
+                  <div style={{ fontSize: "11px", color: "#64748b", marginBottom: "4px", textAlign: msg.sender === 'ADMIN' ? 'right' : 'left' }}>
+                    {msg.sender === 'USER' ? 'Pengunjung' : msg.sender === 'BOT' ? 'Sistem Bot' : 'Admin'}
+                  </div>
+                  <div style={{
+                    padding: "10px 14px",
+                    borderRadius: "12px",
+                    background: msg.sender === 'ADMIN' ? '#3b82f6' : (msg.sender === 'BOT' ? '#f1f5f9' : 'white'),
+                    color: msg.sender === 'ADMIN' ? 'white' : '#334155',
+                    border: msg.sender === 'USER' ? '1px solid #e2e8f0' : 'none',
+                    lineHeight: "1.5"
+                  }}>
+                    {msg.text}
+                  </div>
+                </div>
+              ))}
+              <div ref={messagesEndRef} />
+            </div>
+
+            <form onSubmit={sendMessage} style={{ padding: "15px", background: "white", borderTop: "1px solid #e2e8f0", display: "flex", gap: "10px" }}>
+              <input
+                type="text"
+                value={text}
+                onChange={e => setText(e.target.value)}
+                disabled={selectedSession.status === 'PENDING'}
+                placeholder={selectedSession.status === 'PENDING' ? "Terima (ACC) chat terlebih dahulu untuk membalas..." : "Ketik pesan balasan..."}
+                style={{ flex: 1, padding: "10px 15px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }}
+              />
+              <button
+                type="submit"
+                disabled={selectedSession.status === 'PENDING' || !text.trim()}
+                style={{ padding: "0 20px", background: selectedSession.status === 'PENDING' ? '#94a3b8' : '#3b82f6', color: "white", borderRadius: "6px", display: "flex", alignItems: "center", justifyContent: "center" }}
+              >
+                <Send size={18} />
+              </button>
+            </form>
+          </>
+        ) : (
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", color: "#94a3b8" }}>
+            Pilih sesi chat di sebelah kiri untuk melihat pesan
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ─── Dashboard utama ──────────────────────────────────────────────────────────
 export default function Dashboard() {
   const { getSession, getRole, setSession, clearSession } = useData();
   const router = useRouter();
 
-  const [loggedIn, setLoggedIn] = useState(() => getSession());
+  const [loggedIn, setLoggedIn] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
-  const [toastMsg,  setToastMsg]  = useState(null);
-  const [role, setRole] = useState(() => getRole() || { type: "admin", name: "Admin" });
+  const [toastMsg, setToastMsg] = useState(null);
+  const [role, setRole] = useState({ type: "admin", name: "Admin" });
   const [showAddMenu, setShowAddMenu] = useState(false);
   const [addAction, setAddAction] = useState({ type: "", key: 0 });
+
+  useEffect(() => {
+    setLoggedIn(getSession());
+    setRole(getRole() || { type: "admin", name: "Admin" });
+  }, []);
 
   function handleLoginSuccess(nextRole) { setSession(true, nextRole); setRole(nextRole); setLoggedIn(true); }
 
@@ -1261,6 +1445,7 @@ export default function Dashboard() {
       prestasi: <TabPrestasi toast={showToast} autoAddKey={addAction.type === "prestasi" ? addAction.key : 0} />,
       berita: <TabBerita toast={showToast} role={role} autoAddKey={addAction.type === "berita" ? addAction.key : 0} />,
       fasilitas: <TabFasilitas toast={showToast} autoAddKey={addAction.type === "fasilitas" ? addAction.key : 0} />,
+      chat: <TabChat toast={showToast} />,
       pengaturan: <TabPengaturan toast={showToast} onLogout={handleLogout} />,
     };
 

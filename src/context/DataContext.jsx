@@ -109,6 +109,11 @@ export function DataProvider({ children }) {
     }
   };
 
+  const getPin = () => "1234";
+  const savePin = (pin) => {};
+  const getMajorPins = () => ({});
+  const saveMajorPins = (pins) => {};
+
   return (
     <DataContext.Provider value={{
       school, updateSchool,
@@ -117,6 +122,7 @@ export function DataProvider({ children }) {
       news, updateNews,
       facilities, updateFacilities,
       getSession, getRole, setSession, clearSession,
+      getPin, savePin, getMajorPins, saveMajorPins
     }}>
       {children}
     </DataContext.Provider>

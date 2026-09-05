@@ -1,40 +1,81 @@
 import React, { useState, useRef, useEffect } from "react";
-import { MessageCircle, X, Send, Bot, ArrowLeft } from "lucide-react";
+import { MessageCircle, X, Send, Bot, ArrowLeft, RefreshCw, Clock } from "lucide-react";
 import { chatbotFaq } from "@/data/mockData";
 
-// ─── Cocokkan input user ke FAQ ───────────────────────────────────────────────
 function findAnswer(input) {
   const lower = input.toLowerCase();
   const match = chatbotFaq.find((faq) =>
     faq.keywords.some((kw) => lower.includes(kw))
   );
-  return match
-    ? match.answer
-    : "Maaf, saya belum bisa menjawab pertanyaan tersebut. Silakan hubungi sekolah secara langsung untuk informasi lebih lanjut.";
+  return match ? match.answer : null;
 }
 
-// Ambil 5 pertanyaan pertama sebagai chip cepat
 const QUICK_QUESTIONS = chatbotFaq.slice(0, 5).map((f) => f.question);
 
-// Format jam HH:MM
-function nowTime() {
-  return new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
+function formatTime(dateString) {
+  if (!dateString) return "";
+  const d = new Date(dateString);
+  return d.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
 }
 
-// ─── Komponen ChatBox ─────────────────────────────────────────────────────────
 export default function ChatBox() {
-  const [open,     setOpen]     = useState(false);
-  const [visible,  setVisible]  = useState(false);
-  const [text,     setText]     = useState("");
+  const [open, setOpen] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [text, setText] = useState("");
   const [messages, setMessages] = useState([]);
+  const [userId, setUserId] = useState(null);
+  const [sessionStatus, setSessionStatus] = useState(null); // PENDING, ACTIVE
   const messagesEndRef = useRef(null);
 
-  // Auto-scroll ke pesan terbaru
+  // Inisialisasi User ID
+  useEffect(() => {
+    let id = localStorage.getItem("chatUserId");
+    if (!id) {
+      id = "user_" + Math.random().toString(36).substr(2, 9);
+      localStorage.setItem("chatUserId", id);
+    }
+    setUserId(id);
+  }, []);
+
+  // Polling data session
+  useEffect(() => {
+    if (!userId) return;
+    
+    const fetchSession = async () => {
+      try {
+        const res = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId })
+        });
+        const data = await res.json();
+        
+        if (data.session) {
+          setSessionStatus(data.session.status);
+          setMessages(data.session.messages);
+        } else {
+          // Jika session tidak ditemukan (karena dihapus admin/timeout/rejected)
+          if (sessionStatus !== null) {
+            setSessionStatus(null);
+            setMessages([]); // Reset chat
+          }
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchSession(); // Initial fetch
+    const interval = setInterval(fetchSession, 3000); // Poll setiap 3 detik
+    return () => clearInterval(interval);
+  }, [userId, sessionStatus]);
+
+  // Auto-scroll
   useEffect(() => {
     if (open) messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, open]);
 
-  // Animasi buka / tutup
+  // Animasi
   useEffect(() => {
     if (open) {
       setVisible(true);
@@ -44,121 +85,146 @@ export default function ChatBox() {
     }
   }, [open]);
 
-  // Kirim pesan (teks bebas atau chip)
-  function sendMessage(e, override) {
+  async function sendMessage(e, override) {
     e?.preventDefault();
     const value = (override ?? text).trim();
-    if (!value) return;
+    if (!value || !userId) return;
 
-    const time = nowTime();
-    setMessages((prev) => [
-      ...prev,
-      { from: "user", text: value, time },
-      { from: "bot",  text: findAnswer(value), time },
-    ]);
     setText("");
+    
+    // 1. Tambahkan pesan user ke UI sementara
+    const userMsg = { sender: "USER", text: value, createdAt: new Date().toISOString() };
+    setMessages(prev => [...prev, userMsg]);
+
+    const answer = findAnswer(value);
+    
+    // 2. Kirim pesan user ke API
+    await fetch("/api/chat/message", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, text: value, sender: "USER" })
+    });
+
+    // 3. Jika ada jawaban bot (FAQ), kirim juga ke API
+    if (answer) {
+      const botMsg = { sender: "BOT", text: answer, createdAt: new Date().toISOString() };
+      setMessages(prev => [...prev, botMsg]);
+      
+      await fetch("/api/chat/message", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, text: answer, sender: "BOT" })
+      });
+    } else {
+      // Jika tidak ada jawaban FAQ, artinya custom chat
+      const fallbackMsg = { 
+        sender: "BOT", 
+        text: "Pesan Anda diteruskan ke Admin. Mohon tunggu balasannya (maksimal 24 jam).", 
+        createdAt: new Date().toISOString() 
+      };
+      setMessages(prev => [...prev, fallbackMsg]);
+      
+      await fetch("/api/chat/message", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, text: fallbackMsg.text, sender: "BOT" })
+      });
+      setSessionStatus("PENDING");
+    }
+  }
+
+  async function startNewSession() {
+    // Reset ID agar seolah membuat session baru, database akan timeout dengan sendirinya atau
+    // kita bisa menghapus secara eksplisit jika diperlukan.
+    const newId = "user_" + Math.random().toString(36).substr(2, 9);
+    localStorage.setItem("chatUserId", newId);
+    setUserId(newId);
+    setMessages([]);
+    setSessionStatus(null);
   }
 
   const showWelcome = messages.length === 0;
 
   return (
     <>
-      {/* ── Jendela chat ── */}
       {visible && (
         <section
           className={`chat-window ${open ? "chat-window--open" : "chat-window--close"}`}
           aria-label="Chat asisten sekolah"
           aria-hidden={!open}
         >
-          {/* ── Header ── */}
           <div className="chat-header">
             <div className="chat-header-left">
-              <button
-                className="chat-back-btn"
-                onClick={() => setOpen(false)}
-                aria-label="Tutup chat"
-              >
+              <button className="chat-back-btn" onClick={() => setOpen(false)} aria-label="Tutup chat">
                 <ArrowLeft size={18} />
               </button>
-              <span className="chat-header-title">Asisten Sekolah</span>
+              <div className="chat-header-titles">
+                <span className="chat-header-title">Asisten Sekolah</span>
+                {sessionStatus === 'PENDING' && <span className="chat-header-subtitle">Menunggu Admin...</span>}
+                {sessionStatus === 'ACTIVE' && <span className="chat-header-subtitle active">Terhubung dengan Admin</span>}
+              </div>
             </div>
-            <button
-              className="chat-close-btn"
-              onClick={() => setOpen(false)}
-              aria-label="Tutup"
-            >
-              <X size={18} />
-            </button>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              {!showWelcome && (
+                <button className="chat-close-btn" onClick={startNewSession} title="Pertanyaan Baru">
+                  <RefreshCw size={16} />
+                </button>
+              )}
+              <button className="chat-close-btn" onClick={() => setOpen(false)} aria-label="Tutup">
+                <X size={18} />
+              </button>
+            </div>
           </div>
 
-          {/* ── Area pesan ── */}
           <div className="chat-messages">
-
-            {/* Pesan sambutan bot — selalu tampil di atas */}
             <div className="chat-row chat-row--bot">
-              <div className="chat-avatar">
-                <Bot size={16} />
-              </div>
+              <div className="chat-avatar"><Bot size={16} /></div>
               <div className="chat-bubble-wrap">
                 <span className="chat-sender-name">Asisten Sekolah</span>
                 <div className="chat-bubble bot">
                   👋 SMK Negeri 1 Beringin disini..<br />
                   Hai! Ada yang bisa kami bantu?
                 </div>
-                <span className="chat-time">{nowTime()}</span>
               </div>
             </div>
 
-            {/* Chip pertanyaan cepat — tampil saat belum ada percakapan */}
             {showWelcome && (
               <div className="chat-quick-list">
                 {QUICK_QUESTIONS.map((q, i) => (
-                  <button
-                    key={i}
-                    className="chat-quick-pill"
-                    onClick={() => sendMessage(null, q)}
-                  >
-                    {q}
-                  </button>
+                  <button key={i} className="chat-quick-pill" onClick={() => sendMessage(null, q)}>{q}</button>
                 ))}
               </div>
             )}
 
-            {/* Percakapan */}
-            {messages.map((msg, i) => (
-              <div
-                key={i}
-                className={`chat-row chat-row--${msg.from}`}
-              >
-                {msg.from === "bot" && (
-                  <div className="chat-avatar"><Bot size={16} /></div>
-                )}
-                <div className="chat-bubble-wrap">
-                  {msg.from === "bot" && (
-                    <span className="chat-sender-name">Asisten Sekolah</span>
-                  )}
-                  <div className={`chat-bubble ${msg.from}`}>
-                    {msg.text.split("\n").map((line, j, arr) => (
-                      <span key={j}>{line}{j < arr.length - 1 && <br />}</span>
-                    ))}
-                  </div>
-                  <span className="chat-time">{msg.time}</span>
-                </div>
-              </div>
-            ))}
+            {messages.map((msg, i) => {
+              const isUser = msg.sender === "USER";
+              const isBot = msg.sender === "BOT";
+              const isAdmin = msg.sender === "ADMIN";
+              const rowClass = isUser ? "chat-row--user" : "chat-row--bot";
+              const bubbleClass = isUser ? "user" : (isAdmin ? "admin" : "bot");
+              const senderName = isUser ? "Anda" : (isAdmin ? "Admin Sekolah" : "Asisten Sekolah");
 
-            {/* Chip pertanyaan lain setelah ada percakapan */}
+              return (
+                <div key={i} className={`chat-row ${rowClass}`}>
+                  {!isUser && <div className="chat-avatar"><Bot size={16} /></div>}
+                  <div className="chat-bubble-wrap">
+                    {!isUser && <span className="chat-sender-name">{senderName}</span>}
+                    <div className={`chat-bubble ${bubbleClass}`}>
+                      {msg.text.split("\n").map((line, j, arr) => (
+                        <span key={j}>{line}{j < arr.length - 1 && <br />}</span>
+                      ))}
+                    </div>
+                    <span className="chat-time">{formatTime(msg.createdAt)}</span>
+                  </div>
+                </div>
+              );
+            })}
+
             {!showWelcome && (
               <div className="chat-quick-list chat-quick-list--compact">
                 <p className="chat-quick-label">Pertanyaan lain:</p>
                 {QUICK_QUESTIONS.map((q, i) => (
-                  <button
-                    key={i}
-                    className="chat-quick-pill"
-                    onClick={() => sendMessage(null, q)}
-                  >
-                    {q}
-                  </button>
+                  <button key={i} className="chat-quick-pill" onClick={() => sendMessage(null, q)}>{q}</button>
                 ))}
               </div>
             )}
@@ -166,7 +232,6 @@ export default function ChatBox() {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* ── Input pesan ── */}
           <form className="chat-input" onSubmit={sendMessage}>
             <input
               value={text}
@@ -181,7 +246,6 @@ export default function ChatBox() {
         </section>
       )}
 
-      {/* ── Tombol buka/tutup ── */}
       <button
         className={`chat-button ${open ? "chat-button--active" : ""}`}
         onClick={() => setOpen((p) => !p)}

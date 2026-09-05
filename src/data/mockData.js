@@ -173,12 +173,4 @@ export const chatbotFaq = [
     answer:
       "SMK Negeri 1 Beringin telah meraih berbagai prestasi di bidang akademik, kompetisi kejuruan, dan ekstrakurikuler. Kunjungi halaman Prestasi untuk melihat pencapaian lengkap sekolah.",
   },
-
-  {
-    id: 11,
-    question: "Konsultasi BK",
-    keywords: [""],
-    answer:
-      "https://presensi.tiksmkn1beringin.my.id",
-  },
 ];

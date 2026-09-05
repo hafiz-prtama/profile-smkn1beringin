@@ -2154,4 +2154,5 @@ img           { max-width: 100%; display: block; }
 .hero-glow-two {
   animation: floatBob 7s ease-in-out infinite;
 }
+.chat-bubble.admin { background-color: #fce7f3; color: #831843; } .chat-header-subtitle { font-size: 0.75rem; color: rgba(255,255,255,0.8); display: block; line-height: 1.2; } .chat-header-subtitle.active { color: #86efac; }
 
