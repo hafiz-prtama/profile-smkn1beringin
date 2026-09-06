@@ -8,9 +8,9 @@
   "/api/chat/message/route": "/api/chat/message",
   "/api/chat/route": "/api/chat",
   "/api/chat/session/[id]/route": "/api/chat/session/[id]",
+  "/api/facilities/route": "/api/facilities",
   "/api/majors/route": "/api/majors",
   "/api/news/route": "/api/news",
-  "/api/facilities/route": "/api/facilities",
   "/api/pins/route": "/api/pins",
   "/api/school/route": "/api/school",
   "/icon.png/route": "/icon.png",
@@ -21,9 +21,9 @@
   "/jurusan/[id]/page": "/jurusan/[id]",
   "/fasilitas/page": "/fasilitas",
   "/jurusan/page": "/jurusan",
+  "/konseling/[ticketId]/page": "/konseling/[ticketId]",
   "/page": "/",
   "/konseling/page": "/konseling",
-  "/prestasi/page": "/prestasi",
   "/profil/page": "/profil",
-  "/konseling/[ticketId]/page": "/konseling/[ticketId]"
+  "/prestasi/page": "/prestasi"
 }

@@ -1658,11 +1658,6 @@ function TabBK({ toast }) {
                     Terima Konsultasi
                   </button>
                 )}
-                {selectedTicket.status === 'ACTIVE' && !selectedTicket.isUnmasked && (
-                  <button onClick={() => handleAction('AGREE_UNMASK')} style={{ background: '#f59e0b', color: 'white', padding: '0.5rem 1rem', borderRadius: '6px', fontWeight: 'bold' }}>
-                    Ajukan Sesi Offline
-                  </button>
-                )}
                 <button onClick={() => handleAction('DELETE_TICKET')} style={{ background: '#ef4444', color: 'white', padding: '0.5rem 1rem', borderRadius: '6px', fontWeight: 'bold' }}>
                   Hapus / Deny
                 </button>

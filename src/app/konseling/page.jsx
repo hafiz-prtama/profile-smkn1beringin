@@ -118,10 +118,10 @@ function KonselingContent() {
 
   return (
     <div className="main-content" style={{ minHeight: '80vh', background: '#f1f5f9', padding: '3rem 1rem' }}>
-      <div style={{ maxWidth: '1000px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 350px', gap: '2rem', alignItems: 'start' }}>
+      <div className="bk-layout" style={{ display: 'flex', flexWrap: 'wrap', maxWidth: '1000px', margin: '0 auto', gap: '2rem', alignItems: 'start' }}>
         
         {/* Kiri: Daftar Tiket */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <div style={{ flex: '1 1 400px', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
             <div style={{ background: '#2563eb', color: 'white', padding: '0.5rem', borderRadius: '50%' }}>
               <Shield size={24} />
@@ -185,7 +185,7 @@ function KonselingContent() {
         </div>
 
         {/* Kanan: Form Pengajuan */}
-        <div style={{ background: 'white', padding: '2rem', borderRadius: '16px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)', position: 'sticky', top: '2rem' }}>
+        <div style={{ flex: '1 1 300px', background: 'white', padding: '2rem', borderRadius: '16px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)', position: 'sticky', top: '2rem' }}>
           <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#1e293b', marginBottom: '0.5rem' }}>Ajukan Sesi Baru</h2>
           <p style={{ color: '#64748b', fontSize: '0.875rem', marginBottom: '1.5rem' }}>Identitas Anda aman dan dirahasiakan.</p>
           

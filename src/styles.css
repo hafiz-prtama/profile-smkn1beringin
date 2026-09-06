@@ -4550,3 +4550,70 @@ body.intro-active.intro-revealed .hero-orchestrate,
   transition-delay: 0.48s;
   /* Hero 3D Orbit Card di sebelah kanan */
 }
+
+/* ============================================================
+   MOBILE RESPONSIVENESS (Tambahan Global)
+   ============================================================ */
+.bk-layout {
+  display: grid;
+  grid-template-columns: 1fr 350px;
+}
+
+@media (max-width: 900px) {
+  .hero-grid,
+  .two-column,
+  .leaders-grid,
+  .footer-grid,
+  .bk-layout {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .person-card, .person-card.principal {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .person-photo-wrap {
+    min-height: 200px;
+  }
+
+  .majors-grid,
+  .achievement-strip,
+  .achievement-cards-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .majors-grid,
+  .achievement-strip,
+  .achievement-cards-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .intro-huge-title .intro-char {
+    font-size: 32px !important;
+  }
+  
+  .hero h1 {
+    font-size: 36px !important;
+  }
+  
+  .stat-item {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  .stat-item svg {
+    margin: 0 auto 8px;
+  }
+}
+/* Fix for very small screens (<= 480px) */
+@media (max-width: 480px) {
+  .nav-clock-wrapper {
+    display: none;
+  }
+}
+@media (max-width: 900px) {
+  .bk-layout {
+    grid-template-columns: 1fr !important;
+  }
+}
