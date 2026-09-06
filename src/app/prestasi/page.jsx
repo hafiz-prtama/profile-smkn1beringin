@@ -6,9 +6,9 @@ import { useData } from "@/context/DataContext";
 
 // ─── Kategori warna ───────────────────────────────────────────────────────────
 const CATEGORY_COLORS = {
-  "Akademik":      { bg: "#eaf2ff", text: "#1557a6", dot: "#2563eb" },
-  "Kompetisi":     { bg: "#fff7e6", text: "#92400e", dot: "#f59e0b" },
-  "Non-Akademik":  { bg: "#f0fdf4", text: "#14532d", dot: "#22c55e" },
+  "Akademik": { bg: "#eaf2ff", text: "#1557a6", dot: "#2563eb" },
+  "Kompetisi": { bg: "#fff7e6", text: "#92400e", dot: "#f59e0b" },
+  "Non-Akademik": { bg: "#f0fdf4", text: "#14532d", dot: "#22c55e" },
 };
 function getCategoryStyle(cat) {
   return CATEGORY_COLORS[cat] ?? { bg: "#f3f0ff", text: "#4c1d95", dot: "#8b5cf6" };

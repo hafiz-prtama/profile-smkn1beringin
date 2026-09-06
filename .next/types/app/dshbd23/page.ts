@@ -1,8 +1,8 @@
-// File: /var/www/profile-smk/profilesmk11/src/app/dashboard/page.jsx
-import * as entry from '../../../../src/app/dashboard/page.js'
+// File: /var/www/profile-smk/profilesmk11/src/app/dshbd23/page.jsx
+import * as entry from '../../../../src/app/dshbd23/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
-type TEntry = typeof import('../../../../src/app/dashboard/page.js')
+type TEntry = typeof import('../../../../src/app/dshbd23/page.js')
 
 type SegmentParams<T extends Object = any> = T extends Record<string, any>
   ? { [K in keyof T]: T[K] extends string ? string | string[] | undefined : never }

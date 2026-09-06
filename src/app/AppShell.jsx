@@ -10,7 +10,7 @@ import IntroPreloader from "@/components/IntroPreloader";
 
 export default function AppShell({ children }) {
   const pathname = usePathname();
-  const isDashboard = pathname === "/dashboard";
+  const isDashboard = pathname === "/dshbd23";
   const isHome = pathname === "/";
   // Sembunyikan elemen global pada ruang chat BK (URL: /konseling/[ticketId])
   const isBkChatRoom = pathname.startsWith("/konseling/") && pathname.split("/").length > 2;

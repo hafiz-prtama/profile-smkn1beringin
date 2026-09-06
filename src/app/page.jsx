@@ -86,18 +86,32 @@ function useNumberCounter(endValue, duration = 2000) {
       observer = new IntersectionObserver(
         ([entry]) => {
           if (entry.isIntersecting) {
-            let startTimestamp = null;
-            const step = (timestamp) => {
-              if (!startTimestamp) startTimestamp = timestamp;
-              const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-              // easeOutQuart
-              const easeProgress = 1 - Math.pow(1 - progress, 4);
-              setCount(Math.floor(easeProgress * target));
-              if (progress < 1) {
-                window.requestAnimationFrame(step);
+            const startAnimation = () => {
+              let startTimestamp = null;
+              const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                // easeOutQuart
+                const easeProgress = 1 - Math.pow(1 - progress, 4);
+                setCount(Math.floor(easeProgress * target));
+                if (progress < 1) {
+                  window.requestAnimationFrame(step);
+                }
+              };
+              window.requestAnimationFrame(step);
+            };
+
+            const checkAndStart = () => {
+              // Tunggu sampai preloader selesai (kelas intro-active hilang)
+              if (document.body.classList.contains("intro-active")) {
+                setTimeout(checkAndStart, 200);
+              } else {
+                // Beri sedikit jeda tambahan setelah animasi naik agar lebih pas
+                setTimeout(startAnimation, 300);
               }
             };
-            window.requestAnimationFrame(step);
+
+            checkAndStart();
             observer.disconnect();
           }
         },

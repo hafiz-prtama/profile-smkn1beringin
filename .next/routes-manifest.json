@@ -80,10 +80,10 @@
       "namedRegex": "^/berita(?:/)?$"
     },
     {
-      "page": "/dashboard",
-      "regex": "^/dashboard(?:/)?$",
+      "page": "/dshbd23",
+      "regex": "^/dshbd23(?:/)?$",
       "routeKeys": {},
-      "namedRegex": "^/dashboard(?:/)?$"
+      "namedRegex": "^/dshbd23(?:/)?$"
     },
     {
       "page": "/fasilitas",
