@@ -1,289 +1,398 @@
 <div align="center">
 
-# ⚡ SMKN 1 BERINGIN — DIGITAL ECOSYSTEM & PORTAL
+# SMKN 1 BERINGIN
 
-**Modern, Interactive, High-Performance Web Platform & Administrative Suite**
+### Digital School Profile & Management Platform
 
-[![Next.js](https://img.shields.io/badge/Next.js-15.1.4-black?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
-[![React](https://img.shields.io/badge/React-19.0.0-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.dev/)
-[![Prisma ORM](https://img.shields.io/badge/Prisma-5.21.0-2D3748?style=for-the-badge&logo=prisma&logoColor=white)](https://www.prisma.io/)
-[![MySQL](https://img.shields.io/badge/MySQL-Database-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com/)
-[![Lucide](https://img.shields.io/badge/Icons-Lucide--React-F36?style=for-the-badge&logo=feather&logoColor=white)](https://lucide.dev/)
-[![Security](https://img.shields.io/badge/Auth-RBAC_PIN_Secure-00C853?style=for-the-badge&logo=shield&logoColor=white)](#)
-
-<p align="center">
-  Platform profil sekolah modern terintegrasi yang menghadirkan pengalaman visual imersif (Cyber/Futuristic Glassmorphism), sistem interaksi publik real-time, pengaduan konseling BK anonim aman, serta modul dashboard multifungsi berbasis Role-Based Access Control (RBAC).
+<p>
+  Platform digital modern untuk memperkenalkan profil sekolah,
+  program keahlian, berita, prestasi, fasilitas, serta menyediakan
+  berbagai layanan interaktif untuk siswa dan pengelola sekolah.
 </p>
 
-[🌐 Eksplorasi Fitur](#-fitur-unggulan) • [🛠️ Tech Stack](#️-software--teknologi-yang-digunakan) • [🗺️ Alur Sistem](#-arsitektur--alur-sistem) • [📊 Alur Dashboard](#-arsitektur--alur-kerja-dashboard) • [🚀 Panduan Instalasi](#-panduan-instalasi--menjalankan)
+<br>
 
----
+![Next.js](https://img.shields.io/badge/Next.js-15.1.4-black?style=flat-square\&logo=next.js)
+![React](https://img.shields.io/badge/React-19-20232A?style=flat-square\&logo=react)
+![Prisma](https://img.shields.io/badge/Prisma-5.21-2D3748?style=flat-square\&logo=prisma)
+![MySQL](https://img.shields.io/badge/MySQL-8.0+-4479A1?style=flat-square\&logo=mysql)
+![Lucide](https://img.shields.io/badge/Lucide-React-F36?style=flat-square\&logo=lucide)
+
+<br><br>
+
+<img src="https://capsule-render.vercel.app/api?type=waving&height=120&section=header&color=0:0d1117,50:161b22,100:0d1117&animation=fadeIn" width="100%"/>
 
 </div>
 
-## 🌟 Ringkasan Eksekutif
+---
 
-Aplikasi ini dirancang sebagai **hub digital komprehensif** untuk SMK Negeri 1 Beringin. Menggabungkan performa tinggi Next.js App Router dengan arsitektur database relasional modern via Prisma ORM.
+## ✦ Tentang Proyek
 
-Platform ini tidak hanya berfungsi sebagai media promosi & branding sekolah kelas industri, tetapi juga sebagai **sistem operasional interaktif** antara manajemen sekolah, ketua jurusan, siswa, dan orang tua/wali murid.
+**SMKN 1 Beringin Digital Platform** merupakan website profil dan sistem informasi sekolah yang dirancang untuk memberikan pengalaman digital yang modern, cepat, dan responsif.
+
+Website ini menggabungkan **informasi publik sekolah** dengan **dashboard pengelolaan konten**, sehingga informasi dapat diperbarui dengan lebih mudah.
+
+### Tujuan utama
+
+* Menampilkan informasi sekolah secara modern.
+* Memperkenalkan program keahlian kepada calon siswa.
+* Menyediakan pusat berita dan informasi sekolah.
+* Menampilkan prestasi serta fasilitas sekolah.
+* Menyediakan layanan interaksi dan konsultasi.
+* Mempermudah pengelolaan konten melalui dashboard.
 
 ---
 
-## 🛠️ Software & Teknologi yang Digunakan
+## ✨ Fitur Utama
 
-Proyek ini dibangun di atas pondasi teknologi mutakhir:
+### 🌐 Website Publik
 
-### 1. **Core Framework & Runtime**
-* **Node.js** — Lingkungan eksekusi JavaScript performa tinggi di sisi server.
-* **Next.js 15 (App Router)** — Framework React full-stack dengan Hybrid Rendering (SSR/SSG/Client Components), dynamic server routing, dan API Route handlers.
-* **React 19** — Library UI deklaratif modern untuk manipulasi state dan lifecycle komponen secara reaktif.
+**Beranda**
 
-### 2. **Database & Data Layer**
-* **MySQL** — Relational Database Management System (RDBMS) tangguh untuk persistensi data sekolah, jurusan, berita, prestasi, chat publik, dan tiket konseling.
-* **Prisma ORM (v5.21.0)** — Type-safe Database Toolkit untuk skema modeling, automated migration, dan client querying bebas runtime SQL error.
+* Hero section
+* Informasi singkat sekolah
+* Statistik sekolah
+* Sambutan kepala sekolah
+* Program keahlian
+* Berita terbaru
+* Prestasi
+* Fasilitas
 
-### 3. **Styling & Visual Design System**
-* **Modern Vanilla CSS & Custom Design System** — Zero unnecessary CSS overhead, 100% responsif dengan token variabel global, efek *Glassmorphism*, gradien dinamis modern, dan animasi mikro responsif.
-* **React Parallax Tilt** — Interaksi 3D Card tilt interaktif yang memikat pada elemen kartu jurusan dan galeri prestasi.
-* **Lucide React** — Set icon vektor modern, tajam, dan konsisten di seluruh interface.
+**Profil Sekolah**
 
-### 4. **Keamanan & Autentikasi**
-* **Jose (JWT/JWE)** — Token kriptografi standar industri untuk sesi dan keamanan otentikasi.
-* **Role-Based Pin Authentication** — Proteksi portal dashboard dengan PIN unik per wewenang (Super Admin & Spesifik Jurusan).
-* **Anonymous Tokenization Client-Side** — Mekanisme token anonim di sisi browser untuk privasi tiket konseling BK.
+* Sejarah sekolah
+* Visi & misi
+* Struktur pimpinan
+* Informasi sekolah
+
+**Program Keahlian**
+
+Informasi mengenai 7 program keahlian:
+
+* PPLG
+* TJKT
+* Tata Busana
+* Kuliner
+* Kecantikan & Spa
+* ULP
+* Perhotelan
+
+**Berita**
+
+* Daftar berita
+* Detail artikel
+* Kategori berita
+* Cover berita
+
+**Prestasi**
+
+* Dokumentasi pencapaian siswa
+* Prestasi sekolah
+* Galeri kegiatan
+
+**Fasilitas**
+
+* Laboratorium
+* Workshop
+* Perpustakaan
+* Fasilitas praktik
+
+**Konseling**
+
+* Pengajuan konsultasi
+* Sistem tiket
+* Identitas pengguna dibuat anonim
+* Komunikasi dengan pihak BK
 
 ---
 
-## 🗺️ Arsitektur & Alur Sistem
+## 🖥️ Dashboard
 
-Sistem terbagi ke dalam 2 zona utama: **Zona Publik (Front Office)** dan **Zona Administrasi (Back Office / Dashboard)**.
+Dashboard digunakan untuk membantu pengelola sekolah mengatur berbagai informasi yang tampil pada website.
+
+### Dashboard menyediakan
+
+| Modul          | Fungsi                                  |
+| -------------- | --------------------------------------- |
+| Overview       | Melihat statistik dan ringkasan website |
+| Profil Sekolah | Mengatur informasi sekolah              |
+| Jurusan        | Mengatur informasi program keahlian     |
+| Berita         | Membuat dan mengelola berita            |
+| Prestasi       | Mengelola data prestasi                 |
+| Fasilitas      | Mengelola informasi fasilitas           |
+| Chat           | Mengelola pesan dari pengguna           |
+| Konseling      | Mengelola tiket konsultasi              |
+
+Dengan dashboard ini, perubahan informasi tidak perlu dilakukan langsung pada kode website.
+
+---
+
+## 💡 Tampilan & Pengalaman Pengguna
+
+Website menggunakan pendekatan desain modern dengan fokus pada:
+
+* Clean & minimal interface
+* Glassmorphism yang ringan
+* Animasi transisi yang halus
+* Efek cahaya yang subtle
+* Responsive design
+* Interactive cards
+* Modern typography
+* Micro-interactions
+
+> Desain dibuat untuk terlihat modern tanpa mengorbankan kenyamanan membaca dan navigasi.
+
+---
+
+## 🧩 Teknologi
+
+### Frontend & Framework
+
+* **Next.js 15** — Full-stack React framework
+* **React 19** — Library antarmuka
+* **Vanilla CSS** — Sistem styling dan desain
+* **Lucide React** — Icon library
+* **React Parallax Tilt** — Interaksi kartu 3D
+
+### Backend & Database
+
+* **Next.js API Routes**
+* **Prisma ORM**
+* **MySQL**
+
+### Authentication
+
+* **Jose** untuk token/session
+* Sistem role-based access
+* Pengelolaan akses berdasarkan hak pengguna
+
+---
+
+## 🗺️ Cara Kerja Sistem
 
 ```mermaid
-flowchart TB
-    subgraph Klien["Pengunjung / Pengguna"]
-        P[Umum / Calon Siswa]
-        S[Siswa / Orang Tua]
-        A[Admin / Kaprog Jurusan]
-    end
+flowchart LR
 
-    subgraph FrontOffice["Portal Publik (Front Office)"]
-        Landing["Beranda (Hero, Sambutan, Profil Singkat)"]
-        Profil["Detail Profil, Visi-Misi & Manajemen"]
-        Jurusan["Eksplorasi 7 Program Keahlian"]
-        Berita["Pusat Berita & Informasi Sekolah"]
-        Prestasi["Showcase Prestasi & Fasilitas"]
-        ChatPublik["Live Chat Widget & Tanya Jawab"]
-        KonselingBK["Portal Konseling Anonim BK"]
-    end
+    User["Pengunjung"]
+    Admin["Pengelola"]
 
-    subgraph BackOffice["Admin Workspace (dshbd23)"]
-        Gatekeeper["PIN-Gate Authentication"]
-        Overview["Monitoring & Statistik Sekolah"]
-        CRUDM["Manajemen Konten (Berita, Jurusan, Prestasi, dsb)"]
-        ChatManager["Live Response Pesan Siswa"]
-        BKManager["Triage & Respons Tiket BK"]
-    end
+    Web["Website Publik"]
+    Dashboard["Dashboard"]
 
-    subgraph DataEngine["Database & API Layer"]
-        API["Next.js API Engine (/api/*)"]
-        Prisma["Prisma ORM Client"]
-        MySQL[(MySQL Database)]
-    end
+    API["Next.js API"]
+    Prisma["Prisma ORM"]
+    DB[("MySQL")]
 
-    P --> Landing & Profil & Jurusan & Berita & Prestasi
-    S --> ChatPublik & KonselingBK
-    A --> Gatekeeper --> BackOffice
+    User --> Web
+    Admin --> Dashboard
 
-    FrontOffice <--> API
-    BackOffice <--> API
-    API <--> Prisma <--> MySQL
+    Web --> API
+    Dashboard --> API
+
+    API --> Prisma
+    Prisma --> DB
 ```
+
+Secara sederhana:
+
+**Pengguna → Website → API → Database**
+
+Sedangkan pengelola menggunakan dashboard untuk mengatur data yang kemudian ditampilkan pada website.
 
 ---
 
-## 🧭 Alur Navigasi Publik
+## 📁 Struktur Proyek
 
-* **`/` (Beranda)**:
-  * Hero Section dengan tipografi berwibawa & efek visual digital.
-  * Ringkasan statistik (jumlah siswa, guru, jurusan, prestasi).
-  * Sambutan Kepala Sekolah & Profil Wakil Kepala Sekolah.
-  * Spotlight 7 Program Keahlian dengan link langsung.
-  * Feed berita terhangat, showcase fasilitas unggulan, dan slider prestasi.
-* **`/profil`**: Sejarah sekolah, komitmen mutu, visi & misi, serta bagan struktur pimpinan.
-* **`/jurusan` & `/jurusan/[id]`**: Informasi lengkap 7 program keahlian (PPLG, TJKT, Tata Busana, Kuliner, Kecantikan & Spa, ULP, Perhotelan) mencakup kurikulum, prospek karir, dan sarana lab.
-* **`/berita` & `/berita/[id]`**: Manajemen artikel berita berkategori dengan dukungan cover resolusi tinggi.
-* **`/prestasi`**: Galeri pencapaian siswa/sekolah tingkat regional hingga nasional.
-* **`/fasilitas`**: Inventaris laboratorium, workshop, perpustakaan, dan fasilitas praktik.
-* **`/konseling`**: Layanan pendampingan siswa dan orang tua dengan pelaporan aman terkategori (Akademik, Karir, Anti-Bullying, Mental Health) tanpa mengharuskan siswa membocorkan identitas.
-
----
-
-## 📊 Arsitektur & Alur Kerja Dashboard
-
-Dashboard administrator beralamat di URL rahasia `/dshbd23` dan dirancang khusus untuk kenyamanan operasional staf sekolah.
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor Admin as Pengelola / Kaprog
-    participant UI as Dashboard View (/dshbd23)
-    participant Auth as Auth API (/api/auth)
-    participant Data as Data API (/api/*)
-    participant DB as MySQL via Prisma
-
-    Admin->>UI: Mengakses /dshbd23
-    UI->>Admin: Tampilkan Layar Kunci PIN Digital
-    Admin->>UI: Masukkan PIN Akses
-    UI->>Auth: Validasi PIN (POST /api/auth)
-    Auth->>DB: Query tabel 'Pin'
-    DB-->>Auth: Data PIN & Role Ditemukan
-    Auth-->>UI: Return Token/Session + Role { type, name }
-    
-    alt Jika Role = Super Admin
-        UI->>Data: Fetch All Metrics & Konten
-        UI-->>Admin: Akses Penuh (Overview, Guru/Siswa, Jurusan, Berita, Fasilitas, BK, Chat)
-    else Jika Role = Ketua Jurusan (Major)
-        UI->>Data: Fetch Data Terkait Jurusannya
-        UI-->>Admin: Akses Terbatas (Posting Berita & Pembaruan Jurusan Mandiri)
-    end
-
-    Admin->>UI: Modifikasi Data / Balas Pesan / Respon BK
-    UI->>Data: Request Mutasi (POST/PUT/DELETE)
-    Data->>DB: Eksekusi Update Prisma
-    DB-->>Data: Selesai
-    Data-->>UI: Response Sukses & Re-render Real-time
-```
-
-### Modul-Modul di Dashboard:
-
-1. **🔐 Gatekeeper Otentikasi Berbasis PIN**:
-   * Akses tidak menggunakan username rumit, melainkan PIN digital terenkripsi.
-   * Terdapat pemisahan wewenang antara **Super Admin** (akses global) dan **Akun Jurusan** (akses kurasi informasi jurusannya sendiri).
-2. **📈 Overview & Statistik Interaktif**:
-   * Ringkasan angka siswa, guru, total artikel berita, prestasi terdaftar, dan fasilitas sekolah.
-   * Status pesan live chat yang aktif serta jumlah tiket konseling BK yang butuh respon cepat.
-3. **🏫 Modul Manajemen Profil Sekolah & Sivitas**:
-   * Update data profil sekolah, kuota siswa, staf pendidik, foto pimpinan & wakil kepala sekolah langsung dari dashboard.
-4. **📚 Modul Jurusan & Kurikulum**:
-   * Pembaruan deskripsi, kompetensi keahlian unggulan, prospek dunia kerja, serta galeri kegiatan kejuruan.
-5. **📰 Modul Publikasi Berita & Event**:
-   * Rich text editor untuk rilis berita sekolah, pemilihan kategori dinamis, dan unggah cover berita.
-6. **🏆 Modul Showcase Prestasi & 🏢 Fasilitas**:
-   * Tambah, sunting, dan arsipkan pencapaian perlombaan serta infrastruktur sarana praktik siswa.
-7. **💬 Pusat Pesan Siswa (Live Chat Inbox)**:
-   * Menampung sesi pertanyaan interaktif dari siswa secara langsung untuk dijawab oleh operator.
-8. **🛡️ Portal Bimbingan Konseling (BK Secure Triage)**:
-   * Menerima tiket aduan/konsultasi siswa dengan sistem pseudo-ID anonim.
-   * Guru BK dapat membaca rincian keluhan, mengirim pesan solusi/pendampingan, serta menandai status tindak lanjut secara aman dan terenkripsi.
-
----
-
-## 📁 Struktur Direktori Proyek
-
-```
+```text
 profilesmk11/
+│
 ├── prisma/
-│   └── schema.prisma         # Skema database MySQL (Relasi, Model & Tipe Data)
-├── public/                   # Asset statis publik (Logo, Favicon, Cover Image)
+│   └── schema.prisma
+│
+├── public/
+│   └── assets/
+│
 ├── scripts/
-│   └── seed.js               # Database seeding awal (Data default, Akun PIN Admin)
+│   └── seed.js
+│
 ├── src/
-│   ├── app/                  # Next.js App Router Pages & API Routes
-│   │   ├── api/              # Backend REST endpoints (auth, news, bk, chat, dsb)
-│   │   ├── dshbd23/          # Control Panel / Administrative Dashboard
-│   │   ├── konseling/        # Sistem Bimbingan Konseling Anonim
-│   │   ├── profil/           # Halaman Visi Misi & Profil
-│   │   ├── jurusan/          # Halaman Program Keahlian
-│   │   ├── berita/           # Halaman Publikasi Informasi
-│   │   ├── prestasi/         # Halaman Pencapaian
-│   │   ├── fasilitas/        # Halaman Prasarana Sekolah
-│   │   ├── layout.jsx        # Root Layout & Metadata
-│   │   └── page.jsx          # Landing Page Utama
-│   ├── components/           # Reusable UI (Navbar, Footer, Preloader, Cards)
-│   ├── context/              # React Context Providers (Global State Management)
-│   ├── data/                 # Mock Data Fallback & Blueprint Sekolah
-│   ├── lib/                  # Prisma Database Client Singleton
-│   └── styles.css            # Master Design System, Theme Tokens & Animations
-├── package.json              # Manifest dependensi dan script npm
-└── README.md                 # Dokumentasi utama proyek
+│   ├── app/
+│   │   ├── api/
+│   │   ├── dshbd23/
+│   │   ├── konseling/
+│   │   ├── profil/
+│   │   ├── jurusan/
+│   │   ├── berita/
+│   │   ├── prestasi/
+│   │   ├── fasilitas/
+│   │   ├── layout.jsx
+│   │   └── page.jsx
+│   │
+│   ├── components/
+│   ├── context/
+│   ├── data/
+│   ├── lib/
+│   └── styles.css
+│
+├── package.json
+└── README.md
 ```
 
 ---
 
-## 🚀 Panduan Instalasi & Menjalankan
+## 🚀 Instalasi
 
-### 1. Prasyarat Sistem
-* **Node.js**: `v18.x` atau `v20.x` (LTS direkomendasikan)
-* **MySQL Database**: `v8.0+` atau MariaDB setara
-* **NPM** atau **Yarn / PNPM**
+### 1. Persyaratan
 
-### 2. Kloning Repository & Instalasi Dependensi
+Pastikan sudah tersedia:
+
+* Node.js `18.x` atau `20.x`
+* MySQL `8.0+`
+* NPM / Yarn / PNPM
+
+### 2. Clone Repository
+
 ```bash
-# Clone repository
 git clone https://github.com/username/profilesmk11.git
 cd profilesmk11
+```
 
-# Install dependencies
+### 3. Install Dependencies
+
+```bash
 npm install
 ```
 
-### 3. Konfigurasi Environment Variable
-Buat atau sesuaikan file `.env` di root direktori proyek:
+### 4. Konfigurasi Database
+
+Buat file `.env`:
+
 ```env
-# Koneksi Database MySQL
 DATABASE_URL="mysql://username:password@localhost:3306/profilesmk"
 ```
 
-### 4. Sinkronisasi Database (Prisma)
-Jalankan migrasi skema dan generate Prisma Client:
+Sesuaikan:
+
+* `username`
+* `password`
+* nama database
+
+### 5. Setup Prisma
+
 ```bash
-# Generate Prisma Client
 npx prisma generate
-
-# Terapkan skema ke MySQL
 npx prisma db push
+```
 
-# Inisialisasi Data Awal & Akun PIN Dashboard
+Jika project menggunakan data awal:
+
+```bash
 node scripts/seed.js
 ```
 
-### 5. Menjalankan Server Development
+### 6. Jalankan Website
+
 ```bash
 npm run dev
 ```
-Buka peramban di: **`http://localhost:3000`**
 
-### 6. Build untuk Lingkungan Produksi
+Kemudian buka:
+
+```text
+http://localhost:3000
+```
+
+---
+
+## 📦 Production
+
+Untuk membuat build production:
+
 ```bash
-# Build paket produksi
 npm run build
+```
 
-# Jalankan server produksi
+Kemudian jalankan:
+
+```bash
 npm run start
 ```
 
 ---
 
-## 🔑 Informasi Akses Awal (Default Seeding)
+## 📌 Halaman Utama
 
-> **Catatan Keamanan**: Ubah PIN default ini setelah proses deployment pertama pada menu pengaturan dashboard atau database.
+| Halaman         | Deskripsi               |
+| --------------- | ----------------------- |
+| `/`             | Beranda                 |
+| `/profil`       | Profil sekolah          |
+| `/jurusan`      | Daftar program keahlian |
+| `/jurusan/[id]` | Detail program keahlian |
+| `/berita`       | Berita sekolah          |
+| `/berita/[id]`  | Detail berita           |
+| `/prestasi`     | Prestasi                |
+| `/fasilitas`    | Fasilitas               |
+| `/konseling`    | Layanan konseling       |
 
-| Role Wewenang | ID Akses / Nama | Default PIN | Hak Akses |
-| :--- | :--- | :---: | :--- |
-| **Super Administrator** | Admin Sekolah | `2323` | Akses Penuh Seluruh Modul & Konfigurasi |
-| **Ketua Jurusan PPLG** | PPLG | `1010` | Modul Berita & Halaman PPLG |
-| **Ketua Jurusan TJKT** | TJKT | `2020` | Modul Berita & Halaman TJKT |
-| **Ketua Jurusan Busana**| Tata Busana | `3030` | Modul Berita & Halaman Tata Busana |
-| **Ketua Jurusan Kuliner** | Kuliner | `4040` | Modul Berita & Halaman Kuliner |
-| **Ketua Jurusan Spa/Kecantikan** | Kecantikan & Spa | `5050` | Modul Berita & Halaman Kecantikan |
-| **Ketua Jurusan ULP** | ULP | `6060` | Modul Berita & Halaman Wisata (ULP) |
-| **Ketua Jurusan Perhotelan** | Perhotelan | `7070` | Modul Berita & Halaman Perhotelan |
+---
+
+## 🔐 Sistem Akses
+
+Dashboard menggunakan sistem **Role-Based Access Control (RBAC)**.
+
+Setiap pengguna dashboard mendapatkan akses sesuai dengan perannya.
+
+Contohnya:
+
+```text
+Super Admin
+    │
+    ├── Profil Sekolah
+    ├── Jurusan
+    ├── Berita
+    ├── Prestasi
+    ├── Fasilitas
+    ├── Chat
+    └── Konseling
+
+Pengelola Jurusan
+    │
+    └── Konten Jurusannya
+```
+
+Hal ini membuat pengelolaan data lebih terstruktur dan membatasi akses sesuai kebutuhan.
+
+---
+
+## 🎯 Fokus Pengembangan
+
+Project ini dikembangkan dengan beberapa fokus:
+
+**Performance**
+Website dibuat agar tetap ringan dan responsif.
+
+**Accessibility**
+Informasi dibuat mudah ditemukan dan dibaca.
+
+**Maintainability**
+Struktur project dibuat modular agar lebih mudah dikembangkan.
+
+**Security**
+Akses dashboard dan data pengguna dilindungi menggunakan mekanisme autentikasi dan kontrol akses.
+
+**User Experience**
+Animasi dan interaksi digunakan secukupnya agar website terasa hidup tanpa mengganggu pengguna.
 
 ---
 
 <div align="center">
 
-Dibuat dengan dedikasi untuk memajukan transformasi digital dunia vokasi Indonesia.  
-**SMK Negeri 1 Beringin — Unggul, Kompeten, Berkarakter Digital.**
+### Built for SMKN 1 Beringin
+
+*Modern technology for better education.*
+
+<br>
+
+<img src="https://capsule-render.vercel.app/api?type=waving&height=100&section=footer&color=0:0d1117,50:161b22,100:0d1117&animation=fadeIn" width="100%"/>
 
 </div>
