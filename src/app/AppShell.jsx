@@ -11,6 +11,7 @@ import IntroPreloader from "@/components/IntroPreloader";
 export default function AppShell({ children }) {
   const pathname = usePathname();
   const isDashboard = pathname === "/dshbd23";
+  const isMaintenance = pathname === "/maintenance";
   const isHome = pathname === "/";
   // Sembunyikan elemen global pada ruang chat BK (URL: /konseling/[ticketId])
   const isBkChatRoom = pathname.startsWith("/konseling/") && pathname.split("/").length > 2;
@@ -29,14 +30,14 @@ export default function AppShell({ children }) {
 
   return (
     <DataProvider>
-      <div className={`app-shell ${isDashboard ? "app-shell--dashboard" : ""}`}>
+      <div className={`app-shell ${isDashboard ? "app-shell--dashboard" : ""} ${isMaintenance ? "app-shell--maintenance" : ""}`}>
         {isHome && showIntro && (
           <IntroPreloader onComplete={() => setShowIntro(false)} />
         )}
-        {!isDashboard && <Navbar />}
+        {!isDashboard && !isMaintenance && <Navbar />}
         <main>{children}</main>
-        {!isDashboard && !isBkChatRoom && <ChatBox />}
-        {!isDashboard && !isBkChatRoom && <Footer />}
+        {!isDashboard && !isMaintenance && !isBkChatRoom && <ChatBox />}
+        {!isDashboard && !isMaintenance && !isBkChatRoom && <Footer />}
       </div>
     </DataProvider>
   );

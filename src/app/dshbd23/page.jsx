@@ -1747,7 +1747,8 @@ export default function Dashboard() {
     
     // Set default tab based on role
     if (nextRole?.type === "admin_bk") setActiveTab("bk");
-    else if (nextRole?.type === "super_user" || nextRole?.type === "major") setActiveTab("jurusan");
+    else if (nextRole?.type === "super_user") setActiveTab("jurusan");
+    else if (nextRole?.type === "major") setActiveTab("berita");
     else setActiveTab("overview");
   }
 
@@ -1779,8 +1780,11 @@ export default function Dashboard() {
     allowedTabs = NAV_ITEMS.map(i => i.id);
   } else if (role?.type === "admin_bk") {
     allowedTabs = ["bk"];
-  } else if (role?.type === "super_user" || role?.type === "major") {
+  } else if (role?.type === "super_user") {
     allowedTabs = ["jurusan"];
+  } else if (role?.type === "major") {
+    // PIN per jurusan hanya bisa mengakses menu berita untuk posting berita jurusan
+    allowedTabs = ["berita"];
   } else {
     // admin biasa
     allowedTabs = ["overview", "data-sekolah", "profil", "jurusan", "prestasi", "berita", "fasilitas", "chat"];
@@ -1850,7 +1854,8 @@ export default function Dashboard() {
             <h1 className="admin-page-title">{currentNavItem?.label || "Dashboard"}</h1>
             <p className="admin-page-sub">
               {role?.type === "admin_bk" ? "Dashboard Bimbingan Konseling" :
-               role?.type === "super_user" || role?.type === "major" ? `Akses Jurusan · ${role.name}` :
+               role?.type === "super_user" ? `Akses Jurusan · ${role.name}` :
+               role?.type === "major" ? `Akses Berita Jurusan · ${role.name}` :
                "Dashboard Admin · SMK Negeri 1 Beringin"}
             </p>
           </div>
