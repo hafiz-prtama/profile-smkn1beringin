@@ -131,6 +131,20 @@ function PinLogin({ onSuccess }) {
     setError(false);
   }
 
+  // Dukungan input via keyboard (angka 0-9 dan Backspace/Delete)
+  useEffect(() => {
+    function handleKeyDown(e) {
+      if (e.key >= "0" && e.key <= "9") {
+        handleDigit(e.key);
+      } else if (e.key === "Backspace" || e.key === "Delete") {
+        handleDel();
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [digits]);
+
   const PAD = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "", "0", "⌫"];
 
   return (
