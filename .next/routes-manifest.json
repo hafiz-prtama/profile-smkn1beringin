@@ -110,6 +110,12 @@
       "namedRegex": "^/konseling(?:/)?$"
     },
     {
+      "page": "/maintenance",
+      "regex": "^/maintenance(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/maintenance(?:/)?$"
+    },
+    {
       "page": "/prestasi",
       "regex": "^/prestasi(?:/)?$",
       "routeKeys": {},

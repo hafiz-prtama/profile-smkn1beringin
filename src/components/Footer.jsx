@@ -32,8 +32,8 @@ export default function Footer() {
         <div>
           <h4>Kontak</h4>
           <div className="contact-list">
-            <p><MapPin size={17} /> <span>Alamat sekolah diisi di sini</span></p>
-            <p><Phone size={17} /> <span>Nomor telepon diisi di sini</span></p>
+            <p><MapPin size={17} /> <span>Jl. Pendidikan No.3, Emplasmen Kuala Namu, Kec. Beringin, Kabupaten Deli Serdang, Sumatera Utara 20552</span></p>
+            {/* <p><Phone size={17} /> <span>Nomor telepon diisi di sini</span></p> */}
             <p><Mail size={17} /> <span>Email sekolah diisi di sini</span></p>
           </div>
         </div>
@@ -42,10 +42,10 @@ export default function Footer() {
           <h4>Media Sosial</h4>
           <div className="socials" style={{ marginBottom: "15px" }}>
             <a href="https://www.instagram.com/smk_negeri1_beringin?igsi=MXF4YWV2ZzIwNWlxMg==" aria-label="Instagram"><Instagram size={19} /></a>
-            <a href="#" aria-label="Facebook"><Facebook size={19} /></a>
+            <a href="https://www.facebook.com/kanalsmkn1beringin/?locale=id_ID" aria-label="Facebook"><Facebook size={19} /></a>
             <a href="https://www.youtube.com/@smknegeri1beringin943" aria-label="YouTube"><Youtube size={19} /></a>
           </div>
-          
+
           {/* Google Maps Embed */}
           <div style={{ borderRadius: "12px", overflow: "hidden", marginTop: "10px" }}>
             <iframe
@@ -91,7 +91,6 @@ export default function Footer() {
               e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.15)";
             }}
           >
-            <span>✨ Putar Ulang Intro</span>
           </button>
         </div>
       </div>
