@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { MessageCircle, X, Send, Bot, ArrowLeft, RefreshCw, Clock } from "lucide-react";
+import { MessageCircle, X, Send, Bot, ArrowLeft, RefreshCw, ChevronUp, ChevronDown, HelpCircle } from "lucide-react";
 import Link from "next/link";
 import { chatbotFaq } from "@/data/mockData";
 
@@ -26,6 +26,8 @@ export default function ChatBox() {
   const [messages, setMessages] = useState([]);
   const [userId, setUserId] = useState(null);
   const [sessionStatus, setSessionStatus] = useState(null); // PENDING, ACTIVE
+  const [showTemplate, setShowTemplate] = useState(false);
+  const [templateVisible, setTemplateVisible] = useState(false);
   const messagesEndRef = useRef(null);
 
   // Inisialisasi User ID
@@ -37,6 +39,19 @@ export default function ChatBox() {
     }
     setUserId(id);
   }, []);
+
+  // Animasi masuk & keluar (geser ke bawah) untuk template pertanyaan
+  const handleToggleTemplate = () => {
+    if (!showTemplate) {
+      setTemplateVisible(true);
+      setShowTemplate(true);
+    } else {
+      setShowTemplate(false);
+      setTimeout(() => {
+        setTemplateVisible(false);
+      }, 200);
+    }
+  };
 
   // Polling data session
   useEffect(() => {
@@ -74,9 +89,9 @@ export default function ChatBox() {
   // Auto-scroll
   useEffect(() => {
     if (open) messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, open]);
+  }, [messages, open, showTemplate]);
 
-  // Animasi
+  // Animasi open/close window
   useEffect(() => {
     if (open) {
       setVisible(true);
@@ -92,6 +107,7 @@ export default function ChatBox() {
     if (!value || !userId) return;
 
     setText("");
+    setShowTemplate(false); // Tutup panel template saat mengirim pesan
     
     // Intervensi untuk opsi Layanan Konseling BK
     if (value === "Konsultasi Bimbingan Konseling") {
@@ -130,31 +146,37 @@ export default function ChatBox() {
         body: JSON.stringify({ userId, text: answer, sender: "BOT" })
       });
     } else {
-      // Jika tidak ada jawaban FAQ, artinya custom chat
-      const fallbackMsg = { 
-        sender: "BOT", 
-        text: "Pesan Anda diteruskan ke Admin. Mohon tunggu balasannya (maksimal 24 jam).", 
-        createdAt: new Date().toISOString() 
-      };
-      setMessages(prev => [...prev, fallbackMsg]);
-      
-      await fetch("/api/chat/message", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, text: fallbackMsg.text, sender: "BOT" })
-      });
+      // Cek apakah pesan bot fallback ("Pesan Anda diteruskan ke Admin...") sudah pernah dikirim sebelumnya
+      const fallbackAlreadySent = messages.some(
+        (m) => m.sender === "BOT" && m.text.includes("Pesan Anda diteruskan ke Admin")
+      );
+
+      // Hanya kirim pesan bot fallback 1 kali saja dalam percakapan custom chat ini
+      if (!fallbackAlreadySent) {
+        const fallbackMsg = { 
+          sender: "BOT", 
+          text: "Pesan Anda diteruskan ke Admin. Mohon tunggu balasannya (maksimal 24 jam).", 
+          createdAt: new Date().toISOString() 
+        };
+        setMessages(prev => [...prev, fallbackMsg]);
+        
+        await fetch("/api/chat/message", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId, text: fallbackMsg.text, sender: "BOT" })
+        });
+      }
       setSessionStatus("PENDING");
     }
   }
 
   async function startNewSession() {
-    // Reset ID agar seolah membuat session baru, database akan timeout dengan sendirinya atau
-    // kita bisa menghapus secara eksplisit jika diperlukan.
     const newId = "user_" + Math.random().toString(36).substr(2, 9);
     localStorage.setItem("chatUserId", newId);
     setUserId(newId);
     setMessages([]);
     setSessionStatus(null);
+    setShowTemplate(false);
   }
 
   const showWelcome = messages.length === 0;
@@ -247,13 +269,19 @@ export default function ChatBox() {
               );
             })}
 
-            {!showWelcome && (
-              <div className="chat-quick-list chat-quick-list--compact">
-                <p className="chat-quick-label">Pertanyaan lain:</p>
+            {/* Tampilan Pertanyaan Template saat tombol ditekan (dengan animasi masuk & keluar) */}
+            {templateVisible && !showWelcome && (
+              <div className={`chat-quick-list chat-template-animated ${showTemplate ? "chat-template-animated--enter" : "chat-template-animated--exit"}`}>
                 {QUICK_QUESTIONS.map((q, i) => (
-                  <button key={i} className="chat-quick-pill" onClick={() => sendMessage(null, q)}>{q}</button>
+                  <button key={i} className="chat-quick-pill" onClick={() => sendMessage(null, q)}>
+                    {q}
+                  </button>
                 ))}
-                <button className="chat-quick-pill" style={{ background: '#3b82f6', color: 'white', borderColor: '#2563eb' }} onClick={() => sendMessage(null, "Konsultasi Bimbingan Konseling")}>
+                <button
+                  className="chat-quick-pill"
+                  style={{ background: "#2563eb", color: "white", borderColor: "#1d4ed8" }}
+                  onClick={() => sendMessage(null, "Konsultasi Bimbingan Konseling")}
+                >
                   Konsultasi Bimbingan Konseling
                 </button>
               </div>
@@ -261,6 +289,22 @@ export default function ChatBox() {
 
             <div ref={messagesEndRef} />
           </div>
+
+          {/* Tombol Pertanyaan tetap diam di posisinya (di atas input) */}
+          {!showWelcome && (
+            <div className="chat-template-bar">
+              <button
+                type="button"
+                className={`chat-template-toggle-btn ${showTemplate ? "active" : ""}`}
+                onClick={handleToggleTemplate}
+                title={showTemplate ? "Tutup pilihan pertanyaan" : "Lihat pilihan pertanyaan"}
+              >
+                <HelpCircle size={13} />
+                <span>{showTemplate ? "Sembunyikan Pilihan" : "Pertanyaan"}</span>
+                {showTemplate ? <ChevronDown size={14} /> : <ChevronUp size={14} />}
+              </button>
+            </div>
+          )}
 
           <form className="chat-input" onSubmit={sendMessage}>
             <input

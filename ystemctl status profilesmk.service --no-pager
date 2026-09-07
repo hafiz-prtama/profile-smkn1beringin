@@ -1,0 +1,24 @@
+[0;1;34m# /etc/systemd/system/profilesmk.service[0m
+[Unit]
+Description=Profile SMK Negeri 1 Beringin - Next.js Production
+After=network.target mysql.service
+Wants=mysql.service
+
+[Service]
+Type=simple
+
+User=profilesmk
+Group=profilesmk
+
+WorkingDirectory=/var/www/profile-smk/profilesmk11
+
+Environment=NODE_ENV=production
+Environment=PORT=3000
+
+ExecStart=/usr/bin/npm start
+
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
