@@ -22,7 +22,7 @@ const HERO_STATS_TEMPLATE = [
 
 // ─── Teks yang akan diputar di hero ────────────────────────────────────────
 const TYPEWRITER_PHRASES = [
-  "Selamat Datang Di SMK Negeri 1 Beringin",
+  "Selamat Datang di SMK Negeri 1 Beringin",
   "Membangun Generasi Unggul untuk Masa Depan.",
 ];
 
