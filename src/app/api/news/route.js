@@ -34,15 +34,12 @@ export async function PUT(request) {
     // For now, let's just do a sync where we update existing, insert new, and we don't delete unless explicitly asked?
     // Actually, deleteMany with a condition `uploader = X` would work if we knew who is uploading.
     
-    // Let's just pass `role` in the request header or body to know what to delete.
+    // The frontend merges the global list before calling updateNews,
+    // so `news` contains the FULL list of all news, with deletions/updates handled.
+    // Therefore, we can safely delete all and insert the new merged list.
     const { news, role } = data; 
-    // we need to modify DataContext to send { news: data, role: getRole() }
     
-    if (role && role.type === 'major') {
-      await prisma.news.deleteMany({ where: { uploaderType: 'major', uploader: role.name } });
-    } else {
-      await prisma.news.deleteMany();
-    }
+    await prisma.news.deleteMany();
     
     if (news && news.length > 0) {
       await prisma.news.createMany({

@@ -31,6 +31,7 @@ export default function AppShell({ children }) {
   return (
     <DataProvider>
       <div className={`app-shell ${isDashboard ? "app-shell--dashboard" : ""} ${isMaintenance ? "app-shell--maintenance" : ""}`}>
+
         {isHome && showIntro && (
           <IntroPreloader onComplete={() => setShowIntro(false)} />
         )}

@@ -16,14 +16,17 @@ const icons = {
   pplg: Code2,
   tjkt: Network,
   "tata-busana": Shirt,
+  "tata busana": Shirt,
   kuliner: ChefHat,
   "kecantikan-spa": Sparkles,
+  "kecantikan & spa": Sparkles,
   ulp: Map,
   perhotelan: Hotel,
 };
 
 export default function MajorCard({ major }) {
-  const Icon = icons[major.id] || Code2;
+  const shortName = (major.short || "").toLowerCase();
+  const Icon = icons[major.id] || icons[shortName] || Code2;
 
   const hasImage =
     major.image &&

@@ -409,20 +409,7 @@ function TabProfil({ toast }) {
         <textarea rows={3} value={form.principal?.greeting || ""} onChange={(e) => handleNested("principal", "greeting", e.target.value)} />
       </div>
 
-      <hr className="form-divider" />
-      <h3 className="form-section-title">📸 Wakil Kepala Sekolah</h3>
-      <PhotoUploader
-        id="vice-principal-photo-upload"
-        label="Foto Wakil Kepala Sekolah"
-        value={form.vicePrincipal?.photo || ""}
-        onChange={(val) => handleNested("vicePrincipal", "photo", val)}
-        onRemove={() => handleNested("vicePrincipal", "photo", "/placeholder-person.svg")}
-        toast={toast}
-      />
-      <div className="form-group">
-        <label>Nama Wakil Kepala Sekolah</label>
-        <input value={form.vicePrincipal?.name || ""} onChange={(e) => handleNested("vicePrincipal", "name", e.target.value)} />
-      </div>
+
 
       <button className="btn-save" onClick={handleSave}><Save size={15} /> Simpan Semua Perubahan</button>
     </div>

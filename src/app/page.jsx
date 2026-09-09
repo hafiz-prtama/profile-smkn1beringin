@@ -317,24 +317,33 @@ export default function Home() {
 
 
       {/* ================================================================
-          PIMPINAN SEKOLAH — Kepala & Wakil Kepala Sekolah
+          PIMPINAN SEKOLAH — Kepala Sekolah
           ================================================================ */}
-      <section id="pimpinan" className="section leaders-section">
+      <section id="pimpinan" className="section principal-section">
         <div className="container">
-          <ScrollReveal animation="up">
-            <SectionHeading
-              eyebrow="PIMPINAN SEKOLAH"
-              title="Kepala Sekolah & Wakil Kepala Sekolah"
-              description="Kenali pimpinan yang menjadi bagian dari perjalanan dan perkembangan sekolah."
-              center
-            />
-          </ScrollReveal>
-          <div className="leaders-grid">
-            <ScrollReveal animation="left" delay={80}>
-              <PersonCard person={school.principal} principal />
+          <div className="principal-layout">
+            <ScrollReveal animation="left" delay={80} className="principal-photo-reveal">
+              <div className="principal-photo-wrapper">
+                <img src={school.principal.photo} alt={school.principal.name} className="principal-img" />
+              </div>
             </ScrollReveal>
-            <ScrollReveal animation="right" delay={180}>
-              <PersonCard person={school.vicePrincipal} />
+            <ScrollReveal animation="right" delay={180} className="principal-content-reveal">
+              <div className="principal-text-content">
+                <span className="principal-eyebrow">Sambutan</span>
+                <h2 className="principal-title">Kepala Sekolah</h2>
+                <div className="principal-paragraphs">
+                  {school.principal.greeting ? (
+                    school.principal.greeting.split('\n').map((paragraph, idx) => (
+                      <p key={idx}>{paragraph}</p>
+                    ))
+                  ) : (
+                    <p>Sambutan belum tersedia.</p>
+                  )}
+                </div>
+                <div className="principal-name-signature">
+                  <strong>{school.principal.name}</strong>
+                </div>
+              </div>
             </ScrollReveal>
           </div>
         </div>

@@ -45,7 +45,7 @@ export function DataProvider({ children }) {
           if (pData.success) setPinsState(pData.pins);
         }
       } catch (err) {
-        console.error("Failed to fetch initial data", err);sas
+        console.error("Failed to fetch initial data", err);
       }
     };
     loadData();
