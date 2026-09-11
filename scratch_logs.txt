@@ -1,0 +1,100 @@
+Sep 09 19:29:25 tamplateubnt npm[970]:   path: '/var/www/profile-smk/profilesmk11/.next/required-server-files.json'
+Sep 09 19:29:25 tamplateubnt npm[970]: }
+Sep 10 00:21:33 tamplateubnt npm[970]:  ⨯ Error: ENOENT: no such file or directory, open '/var/www/profile-smk/profilesmk11/.next/required-server-files.json'
+Sep 10 00:21:33 tamplateubnt npm[970]:     at async M (.next/server/app/_not-found/page.js:1:3017) {
+Sep 10 00:21:33 tamplateubnt npm[970]:   errno: -2,
+Sep 10 00:21:33 tamplateubnt npm[970]:   code: 'ENOENT',
+Sep 10 00:21:33 tamplateubnt npm[970]:   syscall: 'open',
+Sep 10 00:21:33 tamplateubnt npm[970]:   path: '/var/www/profile-smk/profilesmk11/.next/required-server-files.json'
+Sep 10 00:21:33 tamplateubnt npm[970]: }
+Sep 10 00:40:17 tamplateubnt npm[970]:  ⨯ Error: ENOENT: no such file or directory, open '/var/www/profile-smk/profilesmk11/.next/required-server-files.json'
+Sep 10 00:40:17 tamplateubnt npm[970]:     at async M (.next/server/app/_not-found/page.js:1:3017) {
+Sep 10 00:40:17 tamplateubnt npm[970]:   errno: -2,
+Sep 10 00:40:17 tamplateubnt npm[970]:   code: 'ENOENT',
+Sep 10 00:40:17 tamplateubnt npm[970]:   syscall: 'open',
+Sep 10 00:40:17 tamplateubnt npm[970]:   path: '/var/www/profile-smk/profilesmk11/.next/required-server-files.json'
+Sep 10 00:40:17 tamplateubnt npm[970]: }
+Sep 10 00:43:12 tamplateubnt npm[970]:  ⨯ Error: ENOENT: no such file or directory, open '/var/www/profile-smk/profilesmk11/.next/required-server-files.json'
+Sep 10 00:43:12 tamplateubnt npm[970]:     at async M (.next/server/app/page.js:1:8345) {
+Sep 10 00:43:12 tamplateubnt npm[970]:   errno: -2,
+Sep 10 00:43:12 tamplateubnt npm[970]:   code: 'ENOENT',
+Sep 10 00:43:12 tamplateubnt npm[970]:   syscall: 'open',
+Sep 10 00:43:12 tamplateubnt npm[970]:   path: '/var/www/profile-smk/profilesmk11/.next/required-server-files.json'
+Sep 10 00:43:12 tamplateubnt npm[970]: }
+Sep 10 00:43:12 tamplateubnt npm[970]:  ⨯ Error: ENOENT: no such file or directory, open '/var/www/profile-smk/profilesmk11/.next/required-server-files.json'
+Sep 10 00:43:12 tamplateubnt npm[970]:     at async (.next/server/pages/_error.js:1:6810) {
+Sep 10 00:43:12 tamplateubnt npm[970]:   errno: -2,
+Sep 10 00:43:12 tamplateubnt npm[970]:   code: 'ENOENT',
+Sep 10 00:43:12 tamplateubnt npm[970]:   syscall: 'open',
+Sep 10 00:43:12 tamplateubnt npm[970]:   path: '/var/www/profile-smk/profilesmk11/.next/required-server-files.json'
+Sep 10 00:43:12 tamplateubnt npm[970]: }
+Sep 10 00:43:12 tamplateubnt npm[970]:  ⨯ Error: ENOENT: no such file or directory, open '/var/www/profile-smk/profilesmk11/.next/required-server-files.json'
+Sep 10 00:43:12 tamplateubnt npm[970]:     at async M (.next/server/app/_not-found/page.js:1:3017) {
+Sep 10 00:43:12 tamplateubnt npm[970]:   errno: -2,
+Sep 10 00:43:12 tamplateubnt npm[970]:   code: 'ENOENT',
+Sep 10 00:43:12 tamplateubnt npm[970]:   syscall: 'open',
+Sep 10 00:43:12 tamplateubnt npm[970]:   path: '/var/www/profile-smk/profilesmk11/.next/required-server-files.json'
+Sep 10 00:43:12 tamplateubnt npm[970]: }
+Sep 10 00:43:17 tamplateubnt npm[970]:  ⨯ Error: ENOENT: no such file or directory, open '/var/www/profile-smk/profilesmk11/.next/required-server-files.json'
+Sep 10 00:43:17 tamplateubnt npm[970]:     at async M (.next/server/app/page.js:1:8345) {
+Sep 10 00:43:17 tamplateubnt npm[970]:   errno: -2,
+Sep 10 00:43:17 tamplateubnt npm[970]:   code: 'ENOENT',
+Sep 10 00:43:17 tamplateubnt npm[970]:   syscall: 'open',
+Sep 10 00:43:17 tamplateubnt npm[970]:   path: '/var/www/profile-smk/profilesmk11/.next/required-server-files.json'
+Sep 10 00:43:17 tamplateubnt npm[970]: }
+Sep 10 00:43:17 tamplateubnt npm[970]:  ⨯ Error: ENOENT: no such file or directory, open '/var/www/profile-smk/profilesmk11/.next/required-server-files.json'
+Sep 10 00:43:17 tamplateubnt npm[970]:     at async (.next/server/pages/_error.js:1:6810) {
+Sep 10 00:43:17 tamplateubnt npm[970]:   errno: -2,
+Sep 10 00:43:17 tamplateubnt npm[970]:   code: 'ENOENT',
+Sep 10 00:43:17 tamplateubnt npm[970]:   syscall: 'open',
+Sep 10 00:43:17 tamplateubnt npm[970]:   path: '/var/www/profile-smk/profilesmk11/.next/required-server-files.json'
+Sep 10 00:43:17 tamplateubnt npm[970]: }
+Sep 10 00:43:17 tamplateubnt npm[970]:  ⨯ Error: ENOENT: no such file or directory, open '/var/www/profile-smk/profilesmk11/.next/required-server-files.json'
+Sep 10 00:43:17 tamplateubnt npm[970]:     at async M (.next/server/app/_not-found/page.js:1:3017) {
+Sep 10 00:43:17 tamplateubnt npm[970]:   errno: -2,
+Sep 10 00:43:17 tamplateubnt npm[970]:   code: 'ENOENT',
+Sep 10 00:43:17 tamplateubnt npm[970]:   syscall: 'open',
+Sep 10 00:43:17 tamplateubnt npm[970]:   path: '/var/www/profile-smk/profilesmk11/.next/required-server-files.json'
+Sep 10 00:43:17 tamplateubnt npm[970]: }
+Sep 10 00:43:17 tamplateubnt npm[970]:  ⨯ Error: ENOENT: no such file or directory, open '/var/www/profile-smk/profilesmk11/.next/required-server-files.json'
+Sep 10 00:43:17 tamplateubnt npm[970]:     at async M (.next/server/app/page.js:1:8345) {
+Sep 10 00:43:17 tamplateubnt npm[970]:   errno: -2,
+Sep 10 00:43:17 tamplateubnt npm[970]:   code: 'ENOENT',
+Sep 10 00:43:17 tamplateubnt npm[970]:   syscall: 'open',
+Sep 10 00:43:17 tamplateubnt npm[970]:   path: '/var/www/profile-smk/profilesmk11/.next/required-server-files.json'
+Sep 10 00:43:17 tamplateubnt npm[970]: }
+Sep 10 00:43:17 tamplateubnt npm[970]:  ⨯ Error: ENOENT: no such file or directory, open '/var/www/profile-smk/profilesmk11/.next/required-server-files.json'
+Sep 10 00:43:17 tamplateubnt npm[970]:     at async (.next/server/pages/_error.js:1:6810) {
+Sep 10 00:43:17 tamplateubnt npm[970]:   errno: -2,
+Sep 10 00:43:17 tamplateubnt npm[970]:   code: 'ENOENT',
+Sep 10 00:43:17 tamplateubnt npm[970]:   syscall: 'open',
+Sep 10 00:43:17 tamplateubnt npm[970]:   path: '/var/www/profile-smk/profilesmk11/.next/required-server-files.json'
+Sep 10 00:43:17 tamplateubnt npm[970]: }
+Sep 10 00:43:17 tamplateubnt npm[970]:  ⨯ Error: ENOENT: no such file or directory, open '/var/www/profile-smk/profilesmk11/.next/required-server-files.json'
+Sep 10 00:43:17 tamplateubnt npm[970]:     at async M (.next/server/app/_not-found/page.js:1:3017) {
+Sep 10 00:43:17 tamplateubnt npm[970]:   errno: -2,
+Sep 10 00:43:17 tamplateubnt npm[970]:   code: 'ENOENT',
+Sep 10 00:43:17 tamplateubnt npm[970]:   syscall: 'open',
+Sep 10 00:43:17 tamplateubnt npm[970]:   path: '/var/www/profile-smk/profilesmk11/.next/required-server-files.json'
+Sep 10 00:43:17 tamplateubnt npm[970]: }
+Sep 10 00:43:17 tamplateubnt npm[970]:  ⨯ Error: ENOENT: no such file or directory, open '/var/www/profile-smk/profilesmk11/.next/required-server-files.json'
+Sep 10 00:43:17 tamplateubnt npm[970]:     at async M (.next/server/app/page.js:1:8345) {
+Sep 10 00:43:17 tamplateubnt npm[970]:   errno: -2,
+Sep 10 00:43:17 tamplateubnt npm[970]:   code: 'ENOENT',
+Sep 10 00:43:17 tamplateubnt npm[970]:   syscall: 'open',
+Sep 10 00:43:17 tamplateubnt npm[970]:   path: '/var/www/profile-smk/profilesmk11/.next/required-server-files.json'
+Sep 10 00:43:17 tamplateubnt npm[970]: }
+Sep 10 00:43:17 tamplateubnt npm[970]:  ⨯ Error: ENOENT: no such file or directory, open '/var/www/profile-smk/profilesmk11/.next/required-server-files.json'
+Sep 10 00:43:17 tamplateubnt npm[970]:     at async (.next/server/pages/_error.js:1:6810) {
+Sep 10 00:43:17 tamplateubnt npm[970]:   errno: -2,
+Sep 10 00:43:17 tamplateubnt npm[970]:   code: 'ENOENT',
+Sep 10 00:43:17 tamplateubnt npm[970]:   syscall: 'open',
+Sep 10 00:43:17 tamplateubnt npm[970]:   path: '/var/www/profile-smk/profilesmk11/.next/required-server-files.json'
+Sep 10 00:43:17 tamplateubnt npm[970]: }
+Sep 10 00:43:17 tamplateubnt npm[970]:  ⨯ Error: ENOENT: no such file or directory, open '/var/www/profile-smk/profilesmk11/.next/required-server-files.json'
+Sep 10 00:43:17 tamplateubnt npm[970]:     at async M (.next/server/app/_not-found/page.js:1:3017) {
+Sep 10 00:43:17 tamplateubnt npm[970]:   errno: -2,
+Sep 10 00:43:17 tamplateubnt npm[970]:   code: 'ENOENT',
+Sep 10 00:43:17 tamplateubnt npm[970]:   syscall: 'open',
+Sep 10 00:43:17 tamplateubnt npm[970]:   path: '/var/www/profile-smk/profilesmk11/.next/required-server-files.json'
+Sep 10 00:43:17 tamplateubnt npm[970]: }

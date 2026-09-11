@@ -128,7 +128,7 @@ export default function Navbar() {
     }
     // Di halaman lain: gunakan path matching
     if (link.to === "/") return pathname === "/";
-    return pathname.startsWith(link.to);
+    return pathname?.startsWith(link.to);
   };
 
   return (

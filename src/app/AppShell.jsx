@@ -14,7 +14,7 @@ export default function AppShell({ children }) {
   const isMaintenance = pathname === "/maintenance";
   const isHome = pathname === "/";
   // Sembunyikan elemen global pada ruang chat BK (URL: /konseling/[ticketId])
-  const isBkChatRoom = pathname.startsWith("/konseling/") && pathname.split("/").length > 2;
+  const isBkChatRoom = pathname?.startsWith("/konseling/") && pathname?.split("/").length > 2;
 
   const [showIntro, setShowIntro] = useState(true);
 

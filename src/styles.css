@@ -32,6 +32,7 @@
 html {
   scroll-behavior: smooth;
   background: #ddeeff; /* fallback warna wave jika WebGL tidak tersedia */
+  overflow-x: hidden;
 }
 
 body {
@@ -39,6 +40,7 @@ body {
   font-family: Inter, system-ui, sans-serif;
   color: var(--ink);
   background: transparent; /* gradient-wave WebGL canvas sebagai background */
+  overflow-x: hidden;
 }
 
 button,

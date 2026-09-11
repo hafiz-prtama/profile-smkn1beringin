@@ -16,8 +16,8 @@ export default function GradientBackground() {
 
   return (
     <GradientWave
-      opacity={0.45 }
-      colors={["#9FC7E8", "#AEBDF0", "#B8E5F2", "#A6D9E8", "#ffffffff", "#C7E5F4"]}
+      opacity={ 1 }
+      colors={["#c1e3ffff", "#c2d0ffff", "#aadbe9ff", "#b9efffff", "#ffffffff", "#C7E5F4"]}
       noiseSpeed={0.000012}
       noiseFrequency={[0.00014, 0.00030]}
       deform={{ incline: 0, noiseAmp: 280, noiseFlow: 5 }}
