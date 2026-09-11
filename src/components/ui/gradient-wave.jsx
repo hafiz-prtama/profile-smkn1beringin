@@ -288,7 +288,7 @@ class Gradient {
       u_active_colors: U({ value: [1,1,1,1], type: "vec4" }),
       u_global: U({ value: {
         noiseFreq: U({ value: [0.00014, 0.00029], type: "vec2" }),
-        noiseSpeed: U({ value: 0.000005 }),
+        noiseSpeed: U({ value: 0.000012 }),
       }, type: "struct" }),
       u_vertDeform: U({ value: {
         incline: U({ value: 0 }),
@@ -309,8 +309,8 @@ class Gradient {
         value: {
           color: U({ value: sectionColors[i], type: "vec3" }),
           noiseFreq: U({ value: [2 + i/sectionColors.length, 3 + i/sectionColors.length], type: "vec2" }),
-          noiseSpeed: U({ value: 11 + 0.3*i }),
-          noiseFlow: U({ value: 6.5 + 0.3*i }),
+          noiseSpeed: U({ value: 18 + 0.5*i }),
+          noiseFlow: U({ value: 10 + 0.5*i }),
           noiseSeed: U({ value: 5 + 10*i }),
           noiseFloor: U({ value: 0.1 }),
           noiseCeil: U({ value: 0.63 + 0.07*i }),
@@ -398,7 +398,7 @@ void main(){
 
   animate = (timestamp) => {
     if (!this.isPlaying) return;
-    this.time += Math.min(timestamp - this.last, 1000 / 15);
+    this.time += Math.min(timestamp - this.last, 1000 / 15) * 2.2;
     this.last = timestamp;
     this.mesh.material.uniforms.u_time.value = this.time;
     this.minigl.render();
@@ -419,14 +419,14 @@ void main(){
  * Dipasang sebagai fixed background di semua halaman kecuali dashboard.
  */
 export function GradientWave({
-  colors = ["#1557a6", "#18a66b", "#0c3974", "#38bdf8", "#071d3d", "#c8e8f8"],
+  colors = ["#F0F7FF", "#FFFFFF", "#EAF4FB", "#5B9BD5", "#7EB8D8", "#A8CFEA"],
   isPlaying = true,
-  opacity = 0.07,
+  opacity = 0.55,
   shadowPower = 6,
   darkenTop = false,
-  noiseSpeed = 0.000008,
-  noiseFrequency = [0.00012, 0.00025],
-  deform = { incline: 0.4, noiseAmp: 220, noiseFlow: 4 },
+  noiseSpeed = 0.00014,
+  noiseFrequency = [0.00014, 0.00029],
+  deform = { incline: 0.4, noiseAmp: 280, noiseFlow: 6 },
 }) {
   const containerRef = useRef(null);
 
