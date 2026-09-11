@@ -4,20 +4,22 @@ import React, { useState, useEffect, useRef } from "react";
 import { ArrowRight, Users, GraduationCap, Trophy, Building2 } from "lucide-react";
 import Link from "next/link";
 import { useData } from "@/context/DataContext";
-import SectionHeading   from "@/components/SectionHeading";
-import PersonCard       from "@/components/PersonCard";
-import MajorCard        from "@/components/MajorCard";
-import NewsCard         from "@/components/NewsCard";
-import FacilityCard     from "@/components/FacilityCard";
-import ScrollReveal     from "@/components/ScrollReveal";
+import SectionHeading from "@/components/SectionHeading";
+import PersonCard from "@/components/PersonCard";
+import MajorCard from "@/components/MajorCard";
+import NewsCard from "@/components/NewsCard";
+import FacilityCard from "@/components/FacilityCard";
+import ScrollReveal from "@/components/ScrollReveal";
+import SchoolIntroShowcase from "@/components/SchoolIntroShowcase";
+import ScatteredPhotoDeck from "@/components/ScatteredPhotoDeck";
 
 // ─── Data Statistik Hero ─────────────────────────────────────────────────────
 // Nilai statistik dikelola dari Dashboard > Data Siswa & Guru.
 const HERO_STATS_TEMPLATE = [
-  { icon: <Users size={18} />,         key: "studentCount",    suffix: "+", label: "Siswa"    },
-  { icon: <GraduationCap size={18} />, key: "teacherCount",    suffix: "+", label: "Guru"     },
-  { icon: <Trophy size={18} />,        key: "achievementCount", suffix: "+", label: "Prestasi" },
-  { icon: <Building2 size={18} />,     key: "majorCount",      suffix: "",  label: "Jurusan"  },
+  { icon: <Users size={18} />, key: "studentCount", suffix: "+", label: "Siswa" },
+  { icon: <GraduationCap size={18} />, key: "teacherCount", suffix: "+", label: "Guru" },
+  { icon: <Trophy size={18} />, key: "achievementCount", suffix: "+", label: "Prestasi" },
+  { icon: <Building2 size={18} />, key: "majorCount", suffix: "", label: "Jurusan" },
 ];
 
 // ─── Teks yang akan diputar di hero ────────────────────────────────────────
@@ -62,7 +64,7 @@ function useTypewriter(phrases, { typeSpeed = 70, deleteSpeed = 40, pauseAfterTy
 
     timeoutRef.current = setTimeout(tick, typeSpeed);
     return () => clearTimeout(timeoutRef.current);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [displayed, isDeleting, phraseIndex]);
 
   return displayed;
@@ -136,7 +138,7 @@ function useNumberCounter(endValue, duration = 2000) {
 // ─── Hook Mouse Parallax (Efek Mengambang) ─────────────────────────────────
 function useMouseParallax(multiplier = 1) {
   const [offset, setOffset] = useState({ x: 0, y: 0 });
-  
+
   useEffect(() => {
     const handleMouseMove = (e) => {
       const x = ((window.innerWidth / 2) - e.clientX) / 50 * multiplier;
@@ -146,7 +148,7 @@ function useMouseParallax(multiplier = 1) {
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [multiplier]);
-  
+
   return offset;
 }
 
@@ -182,9 +184,49 @@ function useScrollParallax(speed = 0.5) {
   return offsetY;
 }
 
+// ─── Komponen Carousel Kegiatan ────────────────────────────────────────────
+function ActivityCarousel({ photos = [] }) {
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    if (photos.length <= 1) return;
+    const interval = setInterval(() => {
+      setActiveIndex((prev) => (prev - 1 + photos.length) % photos.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [photos]);
+
+  return (
+    <div className="activity-carousel-wrapper">
+      {photos && photos.length > 0 && (
+        <div className="activity-carousel-inner">
+          {photos.map((photo, i) => {
+            let posClass = "pos-hidden";
+            const diff = (i - activeIndex + photos.length) % photos.length;
+
+            if (diff === 0) posClass = "pos-active";
+            else if (diff === 1) posClass = "pos-next-1";
+            else if (diff === 2) posClass = "pos-next-2";
+            else if (diff === 3) posClass = "pos-next-3";
+            else if (diff === photos.length - 1) posClass = "pos-prev-1";
+            else if (diff === photos.length - 2) posClass = "pos-prev-2";
+            else if (diff === photos.length - 3) posClass = "pos-prev-3";
+
+            return (
+              <div key={photo.id || i} className={`carousel-item ${posClass}`}>
+                <img src={photo.image} alt="Kegiatan" />
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Halaman Beranda ─────────────────────────────────────────────────────────
 export default function Home() {
-  const { school, majors, achievements, news, facilities } = useData();
+  const { school, majors, achievements, news, facilities, activityPhotos } = useData();
   const typedText = useTypewriter(TYPEWRITER_PHRASES);
 
   // Semua angka mengikuti data yang dapat diedit melalui Dashboard.
@@ -198,150 +240,67 @@ export default function Home() {
   const parallaxOffset = useMouseParallax(0.5);
   const scrollParallax = useScrollParallax(0.3);
 
+  const sortedAchievements = [...achievements].sort((a, b) => Number(b.createdAt || 0) - Number(a.createdAt || 0));
+  const sortedNews = [...news].sort((a, b) => Number(b.createdAt || 0) - Number(a.createdAt || 0));
+
   return (
     <>
       {/* ================================================================
-          HERO — Banner utama halaman
+          HERO — Banner utama halaman (Gaya Editorial Terpusat dengan Grid & Foto Kertas)
           ================================================================ */}
-      <section id="beranda" className="hero" style={{ position: "relative", overflow: "hidden" }}>
+      <section id="beranda" className="hero-editorial">
+        {/* Pola latar belakang grid halus */}
+        <div className="hero-grid-canvas" aria-hidden="true" />
 
-        {/* Gambar gedung sekolah — background khusus section hero ini saja */}
-        <img
-          src="/gedungsekolah.JPEG?v=2"
-          alt=""
-          aria-hidden="true"
-          style={{
-            position: "absolute",
-            inset: 0,
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            objectPosition: "center bottom",
-            opacity: 0.22,
-            zIndex: 0,
-            pointerEvents: "none",
-          }}
-        />
-        {/* Overlay biru gelap di atas gambar agar menyatu dengan tema */}
-        <div
-          aria-hidden="true"
-          style={{
-            position: "absolute",
-            inset: 0,
-            background: "linear-gradient(to bottom, rgba(8, 25, 70, 0.55) 0%, rgba(10, 40, 100, 0.45) 60%, rgba(6, 18, 55, 0.65) 100%)",
-            zIndex: 1,
-            pointerEvents: "none",
-          }}
-        />
+        <div className="container hero-editorial-container">
+          {/* Header & Teks Terpusat */}
+          <div className="hero-editorial-header">
+            <span className="hero-editorial-eyebrow">A JOURNEY THROUGH VISUAL STORIES · SMKN 1 BERINGIN</span>
 
-        <div
-          className="hero-glow hero-glow-one"
-          style={{ transform: `translateY(${scrollParallax * 0.8}px)`, zIndex: 2 }}
-        />
-        <div
-          className="hero-glow hero-glow-two"
-          style={{ transform: `translateY(${scrollParallax * 1.2}px)`, zIndex: 2 }}
-        />
+            <h1 className="hero-editorial-title">
+              <span className="hero-title-prefix">Selamat Datang di</span>
+              <span className="hero-title-accent">SMK Negeri 1 Beringin</span>
+            </h1>
 
-        <div className="container hero-grid" style={{ position: "relative", zIndex: 3 }}>
-
-          {/* Teks & CTA kiri */}
-          <div className="hero-copy">
-            <div className="hero-orchestrate hero-delay-1">
-              <span className="eyebrow light">WEBSITE RESMI SEKOLAH</span>
-
-              <h1 className="hero-typewriter">
-                {typedText}
-                <span className="typewriter-cursor" aria-hidden="true"></span>
-              </h1>
-            </div>
-
-            <p className="hero-orchestrate hero-delay-2">
-              {school.tagline}
+            <p className="hero-editorial-desc">
+              {school.tagline || "Membangun Generasi Unggul untuk Masa Depan."}
             </p>
-
-            {/* Tombol aksi */}
-            <div className="hero-actions hero-orchestrate hero-delay-3">
-              <button
-                className="button primary"
-                onClick={() => {
-                  const el = document.getElementById("profil");
-                  if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-                }}
-              >
-                Kenali Sekolah <ArrowRight size={17} />
-              </button>
-            </div>
-
-            {/* Statistik sekolah */}
-            <div className="hero-stats hero-orchestrate hero-delay-4">
-              {heroStats.map(({ icon, value, label }) => (
-                <StatItem key={label} icon={icon} value={value} label={label} />
-              ))}
-            </div>
           </div>
 
-          {/* Visual / logo kanan */}
-          <div className="hero-visual hero-orchestrate hero-delay-5">
-            <div 
-              className="hero-card hero-parallax-card" 
-              style={{ transform: `translate(${parallaxOffset.x}px, ${parallaxOffset.y}px)` }}
+          {/* 5 Foto Kertas Menyebar (Animasi tumpuk lalu sebar ke meja, membesar saat di-hover) */}
+          <div className="hero-editorial-deck-wrap">
+            <ScatteredPhotoDeck photos={activityPhotos} />
+          </div>
+
+          {/* Tombol Aksi di Bawah Foto Sesuai Referensi Gambar */}
+          <div className="hero-editorial-actions">
+            <button
+              className="hero-pill-button"
+              onClick={() => {
+                const el = document.getElementById("profil");
+                if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+              }}
             >
-              <div className="logo-orbit">
-                <img src="/logosmk.webp" alt="Logo SMK Negeri 1 Beringin" />
-              </div>
-              <span>SMK NEGERI 1 BERINGIN</span>
-              <small>DELI SERDANG · SUMATERA UTARA</small>
-            </div>
+              Kenali Sekolah <ArrowRight size={17} />
+            </button>
           </div>
 
+          {/* Statistik Sekolah */}
+          <div className="hero-editorial-stats">
+            {heroStats.map(({ icon, value, label }) => (
+              <StatItem key={label} icon={icon} value={value} label={label} />
+            ))}
+          </div>
         </div>
       </section>
 
 
       {/* ================================================================
-          TENTANG SEKOLAH — Foto & deskripsi singkat
+          TENTANG SEKOLAH — Foto Gedung Beranimasi & deskripsi singkat
           ================================================================ */}
       <section id="profil" className="section intro-section">
-        <div className="container two-column">
-
-          {/* Foto sekolah — tampil dari dashboard jika sudah diupload */}
-          <ScrollReveal animation="up" className="intro-image-reveal">
-            <div className="intro-image">
-              {school.coverPhoto ? (
-                <img
-                  src={school.coverPhoto}
-                  alt="Foto Sekolah"
-                  className="hero-parallax-card"
-                  style={{ 
-                    width: "100%", height: "100%", objectFit: "cover", borderRadius: "var(--radius)",
-                    transform: `translate(${parallaxOffset.x * 0.4}px, ${parallaxOffset.y * 0.4}px)`
-                  }}
-                />
-              ) : (
-                <div className="image-placeholder">
-                  <Building2 size={48} />
-                  <span>Foto sekolah</span>
-                  <small>Upload foto dari Dashboard → Profil Sekolah</small>
-                </div>
-              )}
-            </div>
-          </ScrollReveal>
-
-          {/* Teks tentang sekolah */}
-          <ScrollReveal animation="up" delay={120}>
-            <div>
-              <SectionHeading
-                eyebrow="TENTANG SEKOLAH"
-                title="Tempat bertumbuh, belajar, dan berkarya."
-                description={school.description}
-              />
-              <Link href="/profil" className="button outline">
-                Selengkapnya <ArrowRight size={17} />
-              </Link>
-            </div>
-          </ScrollReveal>
-
+        <div className="container">
+          <SchoolIntroShowcase school={school} />
         </div>
       </section>
 
@@ -394,7 +353,7 @@ export default function Home() {
           </ScrollReveal>
 
           <div className="cards-grid majors-grid">
-            {majors.map((major, index) => (
+            {majors.slice(0, 3).map((major, index) => (
               <ScrollReveal key={major.id} animation="jump" delay={index * 130}>
                 <MajorCard major={major} />
               </ScrollReveal>
@@ -424,7 +383,7 @@ export default function Home() {
           </ScrollReveal>
 
           <div className="achievement-strip">
-            {achievements.map((item, index) => (
+            {sortedAchievements.slice(0, 6).map((item, index) => (
               <ScrollReveal key={item.id} animation="up" delay={index * 100}>
                 <article className="achievement-card">
                   {item.image && !item.image.includes("placeholder") ? (
@@ -465,7 +424,7 @@ export default function Home() {
           </ScrollReveal>
 
           <div className="cards-grid news-grid">
-            {news.map((item, index) => (
+            {sortedNews.slice(0, 6).map((item, index) => (
               <ScrollReveal key={item.id} animation="news" delay={index * 120}>
                 <NewsCard item={item} />
               </ScrollReveal>
@@ -495,7 +454,7 @@ export default function Home() {
           </ScrollReveal>
 
           <div className="cards-grid facilities-grid">
-            {facilities.map((item, index) => (
+            {facilities.slice(0, 6).map((item, index) => (
               <ScrollReveal key={item.id} animation="facility" delay={index * 110}>
                 <FacilityCard item={item} />
               </ScrollReveal>

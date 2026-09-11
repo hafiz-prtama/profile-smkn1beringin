@@ -54,6 +54,7 @@ export default function IntroPreloader({ onComplete, onStartReveal }) {
           document.body.style.overflow = originalOverflow;
           document.body.classList.remove("intro-active");
           document.body.classList.remove("intro-revealed");
+          window.dispatchEvent(new CustomEvent("intro-complete"));
           if (onCompleteRef.current) onCompleteRef.current();
         }, 950);
       }
@@ -83,6 +84,7 @@ export default function IntroPreloader({ onComplete, onStartReveal }) {
       document.body.style.overflow = "";
       document.body.classList.remove("intro-active");
       document.body.classList.remove("intro-revealed");
+      window.dispatchEvent(new CustomEvent("intro-complete"));
       if (onCompleteRef.current) onCompleteRef.current();
     }, 400);
   };

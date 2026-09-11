@@ -20,6 +20,7 @@ const NAV_ITEMS = [
   { id: "prestasi", icon: <Trophy size={17} />, label: "Prestasi" },
   { id: "berita", icon: <Newspaper size={17} />, label: "Berita" },
   { id: "fasilitas", icon: <Building2 size={17} />, label: "Fasilitas" },
+  { id: "foto-kegiatan", icon: <ImagePlus size={17} />, label: "Foto Kegiatan" },
   { id: "chat", icon: <MessageCircle size={17} />, label: "Pesan Siswa" },
   { id: "bk", icon: <ShieldCheck size={17} />, label: "Konseling BK" },
   { id: "pengaturan", icon: <Settings size={17} />, label: "Pengaturan" },
@@ -360,18 +361,6 @@ function TabProfil({ toast }) {
   return (
     <div className="tab-form">
 
-      {/* ── Foto Gedung / Cover Sekolah ── */}
-      <h3 className="form-section-title">📸 Foto Sekolah (Tampil di Beranda)</h3>
-      <PhotoUploader
-        id="cover-school-upload"
-        label="Foto Gedung / Cover Sekolah"
-        value={form.coverPhoto || ""}
-        onChange={(val) => setForm((p) => ({ ...p, coverPhoto: val }))}
-        onRemove={() => setForm((p) => ({ ...p, coverPhoto: "" }))}
-        toast={toast}
-      />
-
-      <hr className="form-divider" />
       <h3 className="form-section-title">Informasi Sekolah</h3>
       <div className="form-group">
         <label>Nama Sekolah</label>
@@ -1291,6 +1280,106 @@ function TabPengaturan({ toast, onLogout }) {
   );
 }
 
+// ─── Tab: Foto Kegiatan ────────────────────────────────────────────────────────
+function TabFotoKegiatan({ toast }) {
+  const { activityPhotos, updateActivityPhotos } = useData();
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (activityPhotos?.length >= 10) {
+      alert("Maksimal 10 foto kegiatan yang diizinkan.");
+      return;
+    }
+
+    // Convert file to base64
+    const reader = new FileReader();
+    reader.onload = async (ev) => {
+      setIsUploading(true);
+      try {
+        const res = await fetch('/api/activity-photos', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image: ev.target.result })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          updateActivityPhotos();
+          toast("Foto kegiatan berhasil diunggah");
+        } else {
+          alert(data.error || "Gagal mengunggah foto");
+        }
+      } catch (err) {
+        alert("Terjadi kesalahan.");
+      }
+      setIsUploading(false);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleDelete = async (id) => {
+    if (!confirm("Hapus foto kegiatan ini?")) return;
+    try {
+      const res = await fetch(`/api/activity-photos?id=${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        updateActivityPhotos();
+        toast("Foto berhasil dihapus");
+      } else {
+        alert("Gagal menghapus foto");
+      }
+    } catch (err) {
+      alert("Terjadi kesalahan.");
+    }
+  };
+
+  return (
+    <div>
+      <div className="admin-header">
+        <div>
+          <h2>Foto Kegiatan</h2>
+          <p>Kelola hingga 10 foto kegiatan yang akan ditampilkan di carousel Beranda.</p>
+        </div>
+        <div className="admin-actions">
+          <label className={`button primary ${isUploading ? 'loading' : ''}`} style={{ cursor: 'pointer' }}>
+            <Upload size={17} /> {isUploading ? "Mengunggah..." : "Unggah Foto"}
+            <input type="file" accept="image/*" style={{ display: 'none' }} onChange={handleUpload} disabled={isUploading} />
+          </label>
+        </div>
+      </div>
+
+      <div className="admin-card">
+        <p style={{ marginBottom: 15 }}>
+          Total Foto: <strong>{activityPhotos?.length || 0} / 10</strong>
+        </p>
+        
+        {(!activityPhotos || activityPhotos.length === 0) ? (
+          <div className="empty-state">
+            <ImagePlus size={48} />
+            <p>Belum ada foto kegiatan.</p>
+          </div>
+        ) : (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '15px' }}>
+            {activityPhotos.map((photo) => (
+              <div key={photo.id} style={{ position: 'relative', borderRadius: 'var(--radius)', overflow: 'hidden', border: '1px solid var(--border)' }}>
+                <img src={photo.image} alt="Kegiatan" style={{ width: '100%', height: '150px', objectFit: 'cover', display: 'block' }} />
+                <button 
+                  onClick={() => handleDelete(photo.id)}
+                  style={{ position: 'absolute', top: 5, right: 5, background: 'rgba(239,68,68,0.9)', color: 'white', border: 'none', borderRadius: '50%', width: 30, height: 30, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+                  title="Hapus foto"
+                >
+                  <Trash2 size={16} />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ─── Tab: Chat Siswa ────────────────────────────────────────────────────────────
 function TabChat({ toast }) {
   const [sessions, setSessions] = useState([]);
@@ -1788,7 +1877,7 @@ export default function Dashboard() {
     allowedTabs = ["berita"];
   } else {
     // admin biasa
-    allowedTabs = ["overview", "data-sekolah", "profil", "jurusan", "prestasi", "berita", "fasilitas", "chat"];
+    allowedTabs = ["overview", "data-sekolah", "profil", "jurusan", "prestasi", "berita", "fasilitas", "foto-kegiatan", "chat"];
   }
 
   const visibleNav = NAV_ITEMS.filter(item => allowedTabs.includes(item.id));
@@ -1801,6 +1890,7 @@ export default function Dashboard() {
     prestasi: <TabPrestasi toast={showToast} autoAddKey={addAction.type === "prestasi" ? addAction.key : 0} />,
     berita: <TabBerita toast={showToast} role={role} autoAddKey={addAction.type === "berita" ? addAction.key : 0} />,
     fasilitas: <TabFasilitas toast={showToast} autoAddKey={addAction.type === "fasilitas" ? addAction.key : 0} />,
+    "foto-kegiatan": <TabFotoKegiatan toast={showToast} />,
     chat: <TabChat toast={showToast} />,
     bk: <TabBK toast={showToast} />,
     pengaturan: <TabPengaturan toast={showToast} onLogout={handleLogout} />,

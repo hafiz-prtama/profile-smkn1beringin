@@ -123,3 +123,10 @@ model ConsultationMessage {
   isAction  Boolean  @default(false)
   createdAt DateTime @default(now())
 }
+
+model ActivityPhoto {
+  id        String   @id @default(cuid())
+  image     String   @db.LongText
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+}

@@ -21,18 +21,20 @@ export function DataProvider({ children }) {
   const [news,         setNewsState]         = useState(defaultNews);
   const [facilities,   setFacilitiesState]   = useState(defaultFacilities);
   const [pins,         setPinsState]         = useState([]);
+  const [activityPhotos, setActivityPhotosState] = useState([]);
 
   // Load from API on mount
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [schRes, majRes, achRes, newsRes, facRes, pinsRes] = await Promise.all([
+        const [schRes, majRes, achRes, newsRes, facRes, pinsRes, activityPhotosRes] = await Promise.all([
           fetch('/api/school'),
           fetch('/api/majors'),
           fetch('/api/achievements'),
           fetch('/api/news'),
           fetch('/api/facilities'),
-          fetch('/api/pins')
+          fetch('/api/pins'),
+          fetch('/api/activity-photos')
         ]);
         
         if (schRes.ok) setSchoolState(await schRes.json());
@@ -44,6 +46,7 @@ export function DataProvider({ children }) {
           const pData = await pinsRes.json();
           if (pData.success) setPinsState(pData.pins);
         }
+        if (activityPhotosRes.ok) setActivityPhotosState(await activityPhotosRes.json());
       } catch (err) {
         console.error("Failed to fetch initial data", err);
       }
@@ -96,6 +99,13 @@ export function DataProvider({ children }) {
     return { success: false, error: resData.error };
   }, []);
 
+  const updateActivityPhotos = useCallback(async () => {
+    // We only refetch here, because the POST/DELETE are handled independently, 
+    // but we need to tell context to reload the data.
+    const res = await fetch('/api/activity-photos');
+    if (res.ok) setActivityPhotosState(await res.json());
+  }, []);
+
   // ── Session management ──
   const getSession = ()      => {
     if (typeof window !== "undefined") {
@@ -136,6 +146,7 @@ export function DataProvider({ children }) {
       news, updateNews,
       facilities, updateFacilities,
       pins, updatePins,
+      activityPhotos, updateActivityPhotos,
       getSession, getRole, setSession, clearSession,
       getPin
     }}>

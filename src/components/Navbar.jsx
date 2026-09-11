@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import RealTimeClock from "@/components/RealTimeClock";
 
 // ─── Daftar Link Navigasi ────────────────────────────────────────────────────
@@ -25,9 +25,14 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [floating, setFloating] = useState(false);
   const [activeSection, setActiveSection] = useState("beranda");
+  const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0, top: 0, height: 0, opacity: 0 });
+  const [isMoving, setIsMoving] = useState(false);
 
+  const navRef = useRef(null);
   const rafRef = useRef(null);
   const observerRef = useRef(null);
+  const moveTimerRef = useRef(null);
+  const prevIndexRef = useRef(null);
   const pathname = usePathname();
   const router = useRouter();
   const isHome = pathname === "/";
@@ -56,19 +61,16 @@ export default function Navbar() {
   // ── IntersectionObserver: deteksi section aktif saat di halaman Home ──────
   useEffect(() => {
     if (!isHome) {
-      // Bukan halaman home → tidak perlu scroll-spy
       if (observerRef.current) observerRef.current.disconnect();
       return;
     }
 
-    // Kumpulkan semua section yang punya id
     const sections = NAV_LINKS
       .map(({ sectionId }) => document.getElementById(sectionId))
       .filter(Boolean);
 
     if (sections.length === 0) return;
 
-    // Gunakan rootMargin agar section dianggap "aktif" saat masuk 40% layar
     observerRef.current = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -79,7 +81,6 @@ export default function Navbar() {
       },
       {
         root: null,
-        // Atas: potong 80px (tinggi navbar), bawah: hanya 40% atas viewport yang dihitung
         rootMargin: "-80px 0px -55% 0px",
         threshold: 0,
       }
@@ -92,13 +93,83 @@ export default function Navbar() {
     };
   }, [isHome]);
 
+  const closeMenu = () => setMenuOpen(false);
+
+  // ── Tentukan apakah link aktif ───────────────────────────────────────────
+  const isLinkActive = (link) => {
+    if (isHome) {
+      return activeSection === link.sectionId;
+    }
+    if (link.to === "/") return pathname === "/";
+    return pathname?.startsWith(link.to);
+  };
+
+  const activeIndex = NAV_LINKS.findIndex((link) => isLinkActive(link));
+  const safeActiveIndex = activeIndex >= 0 ? activeIndex : 0;
+
+  // ── Hitung posisi indikator pipih persis sesuai teks aktif ──────────────────
+  const updateIndicator = useCallback(() => {
+    if (!navRef.current) return;
+    const activeEl = navRef.current.querySelector(".nav-link.active");
+    if (!activeEl) return;
+
+    const navRect = navRef.current.getBoundingClientRect();
+    const textEl = activeEl.querySelector(".nav-link-text") || activeEl;
+    const textRect = textEl.getBoundingClientRect();
+
+    if (window.innerWidth > 900) {
+      const left = textRect.left - navRect.left;
+      const width = textRect.width;
+      setIndicatorStyle({
+        left: Math.round(left),
+        width: Math.round(width),
+        top: 0,
+        height: 0,
+        opacity: 1,
+      });
+    } else {
+      const top = textRect.top - navRect.top;
+      const height = textRect.height;
+      setIndicatorStyle({
+        left: 14,
+        width: 3.5,
+        top: Math.round(top),
+        height: Math.round(height),
+        opacity: 1,
+      });
+    }
+  }, []);
+
+  // ── Efek animasi: saat berpindah mengecil & bergeser, sampai melebar ──────
+  useEffect(() => {
+    if (prevIndexRef.current !== null && prevIndexRef.current !== safeActiveIndex) {
+      setIsMoving(true);
+      if (moveTimerRef.current) clearTimeout(moveTimerRef.current);
+      moveTimerRef.current = setTimeout(() => {
+        setIsMoving(false);
+      }, 280);
+    }
+    prevIndexRef.current = safeActiveIndex;
+
+    updateIndicator();
+  }, [safeActiveIndex, updateIndicator]);
+
+  useEffect(() => {
+    const handleResize = () => updateIndicator();
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      if (moveTimerRef.current) clearTimeout(moveTimerRef.current);
+    };
+  }, [updateIndicator]);
+
   // ── Klik link navigasi ───────────────────────────────────────────────────
   const handleNavClick = useCallback(
     (e, link) => {
       closeMenu();
+      setActiveSection(link.sectionId);
 
       if (isHome) {
-        // Sudah di halaman home → scroll ke section yang sesuai
         e.preventDefault();
         const target = document.getElementById(link.sectionId);
         if (target) {
@@ -106,36 +177,16 @@ export default function Navbar() {
         } else if (link.sectionId === "beranda") {
           window.scrollTo({ top: 0, behavior: "smooth" });
         }
-      } else {
-        // Halaman lain → navigasi ke home, lalu setelah render scroll ke section
-        if (link.to === "/") {
-          // Cukup navigate ke "/"  — ScrollToTop akan handle
-          return; // biarkan NavLink bekerja normal
-        }
-        // Jika klik link yang rutenya beda (misal /jurusan dari profil) biarkan NavLink normal
       }
     },
     [isHome]
   );
 
-  const closeMenu = () => setMenuOpen(false);
-
-  // ── Tentukan apakah link aktif (untuk highlight navbar) ──────────────────
-  const isLinkActive = (link) => {
-    if (isHome) {
-      // Di halaman home: gunakan section yang terlihat
-      return activeSection === link.sectionId;
-    }
-    // Di halaman lain: gunakan path matching
-    if (link.to === "/") return pathname === "/";
-    return pathname?.startsWith(link.to);
-  };
-
   return (
     <header className={`navbar${floating ? " navbar--floating" : ""}`}>
       <div className="container nav-inner">
 
-        {/* ── Brand / Logo ── */}
+        {/* ── Brand / Logo (Kiri) ── */}
         <Link href="/" className="brand" onClick={closeMenu}>
           <img src="/logosmk.webp" alt="Logo SMK Negeri 1 Beringin" />
           <div>
@@ -144,9 +195,47 @@ export default function Navbar() {
           </div>
         </Link>
 
-        {/* ── Jam Realtime ── */}
-        <div style={{ marginLeft: 'auto', marginRight: '16px' }} className="nav-clock-wrapper">
-          <RealTimeClock />
+        {/* ── Sisi Kanan: Jam di samping kiri Beranda + Pemilihan Halaman di sudut kanan ── */}
+        <div className="nav-right-section">
+          {/* Jam Realtime (di samping kiri Beranda) */}
+          <div className="nav-clock-wrapper">
+            <RealTimeClock />
+          </div>
+
+          {/* Pemilihan Halaman (Sudut Kanan) */}
+          <nav
+            ref={navRef}
+            className={`nav-links${menuOpen ? " show" : ""}`}
+            aria-label="Navigasi utama"
+          >
+            {NAV_LINKS.map((link, index) => {
+              const isCompleted = index <= safeActiveIndex;
+              const isActive = index === activeIndex;
+              return (
+                <Link
+                  key={link.to}
+                  href={link.to}
+                  className={`nav-link ${isCompleted ? "completed" : ""} ${isActive ? "active" : ""}`}
+                  onClick={(e) => handleNavClick(e, link)}
+                >
+                  <span className="nav-link-text">{link.label}</span>
+                  <span className="nav-link-dot" aria-hidden="true" />
+                </Link>
+              );
+            })}
+
+            {/* Indikator Pipih Berjalan (Tanpa Ekor, melebar sesuai teks) */}
+            <div
+              className={`nav-indicator${isMoving ? " moving" : ""}`}
+              style={{
+                "--ind-left": `${indicatorStyle.left}px`,
+                "--ind-width": `${indicatorStyle.width}px`,
+                "--ind-top": `${indicatorStyle.top}px`,
+                "--ind-height": `${indicatorStyle.height}px`,
+                opacity: indicatorStyle.opacity,
+              }}
+            />
+          </nav>
         </div>
 
         {/* ── Tombol Hamburger (Mobile) ── */}
@@ -158,24 +247,6 @@ export default function Navbar() {
         >
           {menuOpen ? <X size={23} /> : <Menu size={23} />}
         </button>
-
-        {/* ── Link Navigasi ── */}
-        <nav
-          className={`nav-links${menuOpen ? " show" : ""}`}
-          aria-label="Navigasi utama"
-        >
-          {NAV_LINKS.map((link) => (
-            <Link
-              key={link.to}
-              href={link.to}
-              className={`nav-link${isLinkActive(link) ? " active" : ""}`}
-              onClick={(e) => handleNavClick(e, link)}
-            >
-              {link.label}
-            </Link>
-          ))}
-
-        </nav>
 
       </div>
     </header>
