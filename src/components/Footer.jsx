@@ -8,7 +8,7 @@ export default function Footer() {
       <div className="container footer-grid">
         <div className="footer-about">
           <div className="footer-brand">
-            <img src="/logo-smk.png" alt="Logo sekolah" />
+            <img src="/logosmk.webp" alt="Logo sekolah" />
             <div>
               <strong>SMK NEGERI 1 BERINGIN</strong>
               <span>Deli Serdang, Sumatera Utara</span>

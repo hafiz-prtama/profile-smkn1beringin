@@ -92,12 +92,6 @@
       "namedRegex": "^/fasilitas(?:/)?$"
     },
     {
-      "page": "/icon.png",
-      "regex": "^/icon\\.png(?:/)?$",
-      "routeKeys": {},
-      "namedRegex": "^/icon\\.png(?:/)?$"
-    },
-    {
       "page": "/jurusan",
       "regex": "^/jurusan(?:/)?$",
       "routeKeys": {},

@@ -103,7 +103,7 @@ export default function TicketChatPage() {
             <ArrowLeft size={24} />
           </Link>
           <div style={{ width: '40px', height: '40px', background: '#e2e8f0', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-            <img src="/logo-smk.png" alt="Logo BK" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            <img src="/logosmk.webp" alt="Logo BK" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <span style={{ fontSize: '1.1rem', fontWeight: 'bold' }}>Guru BK SMKN 1</span>

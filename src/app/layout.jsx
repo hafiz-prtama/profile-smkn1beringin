@@ -5,6 +5,9 @@ import GradientBackground from "./GradientBackground";
 export const metadata = {
   title: "SMK Negeri 1 Beringin",
   description: "Profil SMK Negeri 1 Beringin",
+  icons: {
+    icon: '/logosmk.webp',
+  },
 };
 
 export default function RootLayout({ children }) {

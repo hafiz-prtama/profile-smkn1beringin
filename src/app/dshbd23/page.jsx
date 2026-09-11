@@ -151,7 +151,7 @@ function PinLogin({ onSuccess }) {
     <div className="pin-screen">
       <div className="pin-card">
         <div className="pin-logo">
-          <img src="/logo-smk.png" alt="Logo SMK" />
+          <img src="/logosmk.webp" alt="Logo SMK" />
         </div>
         <h2 className="pin-title">Admin Dashboard</h2>
         <p className="pin-subtitle">Masukkan PIN 4 digit untuk melanjutkan</p>
@@ -1814,7 +1814,7 @@ export default function Dashboard() {
       {/* ── Sidebar ── */}
       <aside className="admin-sidebar">
         <div className="admin-brand">
-          <img src="/logo-smk.png" alt="Logo" />
+          <img src="/logosmk.webp" alt="Logo" />
           <div style={{ flex: 1 }}>
             <strong>SMK N 1 Beringin</strong>
             <span>{role?.type === "major" ? `Panel ${role.name}` : "Admin Panel"}</span>

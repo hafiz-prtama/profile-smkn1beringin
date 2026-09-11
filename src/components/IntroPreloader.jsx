@@ -119,7 +119,7 @@ export default function IntroPreloader({ onComplete, onStartReveal }) {
         <div className="intro-hero-logo-box">
           <div className="intro-emblem-wrap">
             <img
-              src="/logo-smk.png"
+              src="/logosmk.webp"
               alt="Logo SMK Negeri 1 Beringin"
               className="intro-emblem-img"
             />

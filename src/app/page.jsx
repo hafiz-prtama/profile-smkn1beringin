@@ -203,17 +203,47 @@ export default function Home() {
       {/* ================================================================
           HERO — Banner utama halaman
           ================================================================ */}
-      <section id="beranda" className="hero">
-        <div 
-          className="hero-glow hero-glow-one" 
-          style={{ transform: `translateY(${scrollParallax * 0.8}px)` }} 
+      <section id="beranda" className="hero" style={{ position: "relative", overflow: "hidden" }}>
+
+        {/* Gambar gedung sekolah — background khusus section hero ini saja */}
+        <img
+          src="/gedungsekolah.JPEG?v=2"
+          alt=""
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            objectPosition: "center bottom",
+            opacity: 0.22,
+            zIndex: 0,
+            pointerEvents: "none",
+          }}
         />
-        <div 
-          className="hero-glow hero-glow-two" 
-          style={{ transform: `translateY(${scrollParallax * 1.2}px)` }} 
+        {/* Overlay biru gelap di atas gambar agar menyatu dengan tema */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: "linear-gradient(to bottom, rgba(8, 25, 70, 0.55) 0%, rgba(10, 40, 100, 0.45) 60%, rgba(6, 18, 55, 0.65) 100%)",
+            zIndex: 1,
+            pointerEvents: "none",
+          }}
         />
 
-        <div className="container hero-grid">
+        <div
+          className="hero-glow hero-glow-one"
+          style={{ transform: `translateY(${scrollParallax * 0.8}px)`, zIndex: 2 }}
+        />
+        <div
+          className="hero-glow hero-glow-two"
+          style={{ transform: `translateY(${scrollParallax * 1.2}px)`, zIndex: 2 }}
+        />
+
+        <div className="container hero-grid" style={{ position: "relative", zIndex: 3 }}>
 
           {/* Teks & CTA kiri */}
           <div className="hero-copy">
@@ -258,7 +288,7 @@ export default function Home() {
               style={{ transform: `translate(${parallaxOffset.x}px, ${parallaxOffset.y}px)` }}
             >
               <div className="logo-orbit">
-                <img src="/logo-smk.png" alt="Logo SMK Negeri 1 Beringin" />
+                <img src="/logosmk.webp" alt="Logo SMK Negeri 1 Beringin" />
               </div>
               <span>SMK NEGERI 1 BERINGIN</span>
               <small>DELI SERDANG · SUMATERA UTARA</small>
