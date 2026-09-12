@@ -39,6 +39,8 @@ export default function MajorCard({ major }) {
       tiltMaxAngleY={5}
       scale={1.02}
       transitionSpeed={400}
+      gyroscope={false}
+      tiltEnable={typeof window !== "undefined" && window.innerWidth >= 768}
       glareEnable={true}
       glareMaxOpacity={0.12}
       glareColor="#ffffff"

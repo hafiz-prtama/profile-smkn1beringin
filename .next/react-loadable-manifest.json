@@ -1,1 +1,15 @@
-{}
+{
+  "components/SchoolIntroShowcase.jsx -> gsap": {
+    "id": 7605,
+    "files": [
+      "static/chunks/c15bf2b0.b52ba9c961099339.js",
+      "static/chunks/7605.059f1b7d6a045529.js"
+    ]
+  },
+  "components/SchoolIntroShowcase.jsx -> gsap/ScrollTrigger": {
+    "id": 5580,
+    "files": [
+      "static/chunks/5580.3e791e7d14c48c50.js"
+    ]
+  }
+}

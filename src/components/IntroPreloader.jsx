@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 
 export default function IntroPreloader({ onComplete, onStartReveal }) {
   const [percent, setPercent] = useState(0);
@@ -22,7 +23,8 @@ export default function IntroPreloader({ onComplete, onStartReveal }) {
 
     let animationFrameId;
     let startTime = null;
-    const duration = 1800; // 1.8 detik untuk hitungan 0 - 100% yang jelas, dramatis, dan memukau
+    const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+    const duration = isMobile ? 750 : 1800; // 0.75s di mobile, 1.8s di desktop
 
     // Kurva easing quadratik untuk percepatan yang mulus
     const easeOutQuad = (t) => t * (2 - t);
@@ -56,7 +58,7 @@ export default function IntroPreloader({ onComplete, onStartReveal }) {
           document.body.classList.remove("intro-revealed");
           window.dispatchEvent(new CustomEvent("intro-complete"));
           if (onCompleteRef.current) onCompleteRef.current();
-        }, 950);
+        }, isMobile ? 450 : 950);
       }
     };
 
@@ -120,10 +122,13 @@ export default function IntroPreloader({ onComplete, onStartReveal }) {
         {/* Brand besar di tengah yang akan meluncur naik saat 100% */}
         <div className="intro-hero-logo-box">
           <div className="intro-emblem-wrap">
-            <img
+            <Image
               src="/logosmk.webp"
               alt="Logo SMK Negeri 1 Beringin"
+              width={90}
+              height={90}
               className="intro-emblem-img"
+              priority
             />
           </div>
           <div className="intro-huge-title">

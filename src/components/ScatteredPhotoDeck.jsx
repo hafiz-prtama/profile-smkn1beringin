@@ -1,14 +1,15 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 
 // Fallback foto kegiatan jika data dari database kurang dari 5
 const FALLBACK_PHOTOS = [
-  { id: "fb-1", image: "/gedungsekolah.JPEG?v=2", alt: "Gedung Sekolah SMK Negeri 1 Beringin" },
+  { id: "fb-1", image: "/gedungsekolah.JPEG", alt: "Gedung Sekolah SMK Negeri 1 Beringin" },
   { id: "fb-2", image: "/news-placeholder.svg", alt: "Kegiatan Praktik Siswa" },
   { id: "fb-3", image: "/facility-placeholder.svg", alt: "Laboratorium & Fasilitas" },
   { id: "fb-4", image: "/placeholder-person.svg", alt: "Prestasi & Prestisius Siswa" },
-  { id: "fb-5", image: "/gedungsekolah.JPEG?v=2", alt: "Lingkungan Belajar Hijau & Ramah" },
+  { id: "fb-5", image: "/gedungsekolah.JPEG", alt: "Lingkungan Belajar Hijau & Ramah" },
 ];
 
 // Konfigurasi posisi sebar (meja) untuk masing-masing dari 5 foto
@@ -141,11 +142,14 @@ export default function ScatteredPhotoDeck({ photos = [] }) {
                 title="Klik untuk melihat foto lebih jelas"
               >
                 <div className="photo-paper-inner">
-                  <img
+                  <Image
                     src={item.image}
                     alt={item.alt || `Dokumentasi Kegiatan ${idx + 1}`}
+                    fill
+                    sizes="240px"
                     className="photo-paper-img"
-                    loading="eager"
+                    priority={idx < 2}
+                    unoptimized={typeof item.image === "string" && (item.image.startsWith("data:") || item.image.endsWith(".svg"))}
                   />
                   {/* Efek kilau kertas foto */}
                   <div className="photo-paper-gloss" aria-hidden="true" />

@@ -3,6 +3,10 @@
    ============================================================ */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 
 /* ============================================================
    CSS VARIABLES (Design Tokens)
@@ -33,7 +37,7 @@ html {
   scroll-behavior: smooth;
   background: #ddeeff;
   /* fallback warna wave jika WebGL tidak tersedia */
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body {
@@ -42,7 +46,7 @@ body {
   color: var(--ink);
   background: transparent;
   /* gradient-wave WebGL canvas sebagai background */
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 button,
@@ -741,8 +745,13 @@ img {
 }
 
 @keyframes fadeInModal {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 /* Responsivitas Sebaran Foto (Meja) */
@@ -750,10 +759,12 @@ img {
   .hero-editorial-deck-wrap {
     height: 290px;
   }
+
   .photo-paper-card {
     width: 165px;
     height: 210px;
   }
+
   .scattered-deck-container {
     --scatter-scale: 0.85;
   }
@@ -764,19 +775,23 @@ img {
     padding: 105px 0 50px;
     min-height: auto;
   }
+
   .hero-editorial-deck-wrap {
     height: 250px;
     margin: 18px auto 28px;
   }
+
   .photo-paper-card {
     width: 135px;
     height: 175px;
     border-width: 5px;
     border-radius: 16px;
   }
+
   .photo-paper-inner {
     border-radius: 11px;
   }
+
   .scattered-deck-container {
     --scatter-scale: 0.65;
   }
@@ -786,18 +801,22 @@ img {
   .hero-editorial-deck-wrap {
     height: 220px;
   }
+
   .photo-paper-card {
     width: 105px;
     height: 145px;
     border-width: 4px;
     border-radius: 14px;
   }
+
   .photo-paper-inner {
     border-radius: 10px;
   }
+
   .scattered-deck-container {
     --scatter-scale: 0.48;
   }
+
   .hero-editorial-stats .stat-item {
     padding: 8px 14px;
     font-size: 0.8rem;
@@ -1107,7 +1126,7 @@ img {
   align-items: center;
   justify-content: center;
   transition: border-color 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Saat buram aktif: seluruh kartu beraksen lembut dengan border tegas */
@@ -1115,7 +1134,7 @@ img {
   background: rgba(255, 255, 255, 0.45);
   border-color: rgba(21, 87, 166, 0.45);
   box-shadow: 0 25px 65px rgba(15, 30, 60, 0.11),
-              0 0 35px rgba(21, 87, 166, 0.16);
+    0 0 35px rgba(21, 87, 166, 0.16);
 }
 
 /* Track foto gedung */
@@ -1143,8 +1162,8 @@ img {
   filter: blur(0px);
   will-change: transform, opacity, filter;
   transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1),
-              opacity 0.7s ease,
-              filter 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity 0.7s ease,
+    filter 1.1s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Tahap 1: Foto muncul dari bawah ke atas dalam kondisi tajam dan ukuran besar */
@@ -1192,7 +1211,7 @@ img {
   pointer-events: none;
   transform: translateY(30px);
   transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .intro-showcase-content.content-visible {
@@ -1265,9 +1284,11 @@ img {
   .intro-showcase-card {
     min-height: 560px;
   }
+
   .intro-showcase-content {
     padding: 40px 32px;
   }
+
   .intro-showcase-title {
     font-size: 1.95rem;
   }
@@ -1277,18 +1298,22 @@ img {
   .intro-showcase-card {
     min-height: 500px;
   }
+
   .intro-showcase-content {
     padding: 28px 20px;
   }
+
   .intro-showcase-title {
     font-size: 1.55rem;
     margin-bottom: 12px;
   }
+
   .intro-showcase-desc {
     font-size: 0.95rem;
     line-height: 1.6;
     margin-bottom: 22px;
   }
+
   .intro-showcase-actions {
     gap: 10px;
   }
@@ -6295,5 +6320,24 @@ body.intro-active.intro-revealed .hero-orchestrate,
   .carousel-item.pos-next-3 {
     transform: translate(-280%, -50%) scale(0.45);
     z-index: 5;
+  }
+}
+
+.sp-tagline {
+  font-size: 1.02rem;
+}
+
+.sp-desc {
+  font-size: 0.87rem;
+  line-height: 1.62;
+}
+
+@media (max-width: 480px) {
+  .sp-watermark-text {
+    font-size: clamp(1.3rem, 9vw, 2rem);
+  }
+
+  .sp-school-name {
+    font-size: clamp(1.3rem, 7.5vw, 1.8rem);
   }
 }

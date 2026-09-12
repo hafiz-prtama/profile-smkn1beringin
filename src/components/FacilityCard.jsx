@@ -12,6 +12,8 @@ export default function FacilityCard({ item }) {
       tiltMaxAngleY={4}
       scale={1.02}
       transitionSpeed={400}
+      gyroscope={false}
+      tiltEnable={typeof window !== "undefined" && window.innerWidth >= 768}
       glareEnable={true}
       glareMaxOpacity={0.1}
       glareColor="#ffffff"

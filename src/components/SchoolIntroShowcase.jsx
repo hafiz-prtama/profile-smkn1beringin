@@ -1,99 +1,125 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import Lenis from "lenis";
+import { ZoomParallax } from "@/components/ui/zoom-parallax";
 
 export default function SchoolIntroShowcase({ school = {} }) {
-  // Animasi 2 tahap:
-  // tahap 1: 'idle' -> 'rising' (foto muncul dari bawah ke atas dalam kondisi tajam)
-  // tahap 2: 'blurred' (setelah 3.5 detik foto menjadi buram di dalam border dan teks muncul)
-  const [animationState, setAnimationState] = useState("idle"); // 'idle' | 'rising' | 'blurred'
-  const containerRef = useRef(null);
-  const timerRef = useRef(null);
-
-  const startAnimationSequence = () => {
-    if (timerRef.current) clearTimeout(timerRef.current);
-    // Mulai dengan memunculkan foto dari bawah ke atas (tajam)
-    setAnimationState("rising");
-
-    // Selang 3.5 detik, foto berubah menjadi buram di dalam border dan teks tampil
-    timerRef.current = setTimeout(() => {
-      setAnimationState("blurred");
-    }, 1500);
-  };
+  const introTextRef = useRef(null);
+  const textElementsRef = useRef([]);
 
   useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
+    // 1. Inisialisasi Lenis Smooth Scroll
+    const lenis = new Lenis();
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            // Ketika pengunjung scroll sampai ke bagian profil
-            startAnimationSequence();
-          } else {
-            // Reset saat pengguna scroll jauh keluar dari viewport
-            if (timerRef.current) clearTimeout(timerRef.current);
-            setAnimationState("idle");
+    // 2. Inisialisasi GSAP Animasi Teks (Muncul setelah Zoom Parallax)
+    let isMounted = true;
+    let gsapCtx;
+
+    const initGsap = async () => {
+      try {
+        const gsapMod = await import("gsap");
+        const stMod = await import("gsap/ScrollTrigger");
+        const gsap = gsapMod.default;
+        const { ScrollTrigger } = stMod;
+        gsap.registerPlugin(ScrollTrigger);
+
+        if (!isMounted) return;
+
+        gsapCtx = gsap.context(() => {
+          if (textElementsRef.current.length > 0) {
+            gsap.fromTo(
+              textElementsRef.current,
+              { y: 50, opacity: 0 },
+              {
+                y: 0,
+                opacity: 1,
+                duration: 1,
+                stagger: 0.2,
+                ease: "power3.out",
+                scrollTrigger: {
+                  trigger: introTextRef.current,
+                  start: "top 80%",
+                  end: "bottom 80%",
+                  toggleActions: "play none none reverse",
+                },
+              }
+            );
           }
         });
-      },
-      { threshold: 0.2 }
-    );
+      } catch (err) {
+        console.error("GSAP Init Failed:", err);
+      }
+    };
 
-    observer.observe(el);
+    initGsap();
 
     return () => {
-      observer.disconnect();
-      if (timerRef.current) clearTimeout(timerRef.current);
+      isMounted = false;
+      lenis.destroy();
+      if (gsapCtx) gsapCtx.revert();
     };
   }, []);
 
-  const isRising = animationState === "rising" || animationState === "blurred";
-  const isBlurred = animationState === "blurred";
+  // Foto Tengah (index 0) yang akan membesar menjadi 1 layar, memakai foto sekolah
+  const images = [
+    { src: "/gedungsmk.jpeg", alt: "Gedung SMK Beringin Utama" },
+    { src: "/pohon-sekolah.jpg", alt: "Lingkungan Sekolah" },
+    { src: "/gedungsekolah.JPEG", alt: "Gedung Sekolah Eksterior" },
+    { src: "/logosmk.webp", alt: "Logo Sekolah" },
+    { src: "/gedungsmk.jpeg", alt: "Gedung Utama (Sudut Lain)" },
+    { src: "/pohon-sekolah.jpg", alt: "Pemandangan Sekolah" },
+    { src: "/gedungsekolah.JPEG", alt: "Fasilitas Sekolah" },
+  ];
 
   return (
-    <div
-      ref={containerRef}
-      className={`intro-showcase-wrapper ${isRising ? "is-rising" : ""} ${isBlurred ? "is-blurred" : ""}`}
-    >
-      <div className={`intro-showcase-card ${isBlurred ? "card-bordered-active" : ""}`}>
-        
-        {/* Layer Gambar Gedung Transparan */}
-        <div className="intro-showcase-img-track">
-          <img
-            src="/gedungsmk.jpeg?v=2026_clean"
-            alt="Gedung SMK Negeri 1 Beringin"
-            className={`intro-showcase-img ${isRising ? "img-enter-up" : ""} ${isBlurred ? "img-blur-active" : ""}`}
-          />
-        </div>
+    <div className="bg-[#f0f6ff] w-full relative z-0">
+      {/* 1. Zoom Parallax Section */}
+      <ZoomParallax images={images} />
 
-        {/* Layer Overlay Kaca / Frosted Glass saat buram */}
-        <div className={`intro-showcase-overlay ${isBlurred ? "overlay-visible" : ""}`} />
-
-        {/* Konten Teks yang diambil dari Dashboard */}
-        <div className={`intro-showcase-content ${isBlurred ? "content-visible" : ""}`}>
-          <div className="intro-showcase-content-inner">
-            <span className="intro-badge">TENTANG SEKOLAH</span>
-
-            <h2 className="intro-showcase-title">
-              {school.tagline || school.name || "Tempat Bertumbuh, Belajar, dan Berkarya"}
-            </h2>
-
-            <p className="intro-showcase-desc">
-              {school.description || "SMK Negeri 1 Beringin hadir sebagai sekolah kejuruan yang berfokus pada pengembangan kompetensi, karakter, dan inovasi."}
-            </p>
-
-            <div className="intro-showcase-actions">
-              <Link href="/profil" className="button primary intro-cta-btn">
-                Selengkapnya <ArrowRight size={17} />
-              </Link>
-            </div>
+      {/* 2. Text Reveal Section dengan GSAP */}
+      <div 
+        ref={introTextRef} 
+        className="min-h-screen flex items-center justify-center py-20 px-4 md:px-8 bg-white relative z-10"
+      >
+        <div className="max-w-4xl w-full text-center flex flex-col items-center">
+          <span 
+            ref={(el) => (textElementsRef.current[0] = el)}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-blue-200 bg-blue-50 text-blue-700 text-sm font-bold tracking-widest uppercase mb-6"
+          >
+            TENTANG SEKOLAH
+          </span>
+          
+          <h2 
+            ref={(el) => (textElementsRef.current[1] = el)}
+            className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-[#0b2f63] mb-8 leading-tight tracking-tight"
+          >
+            Membentuk Generasi Kompeten, Berkarakter, dan Siap Menghadapi Masa Depan.
+          </h2>
+          
+          <p 
+            ref={(el) => (textElementsRef.current[2] = el)}
+            className="text-lg md:text-xl text-slate-600 mb-10 max-w-3xl mx-auto leading-relaxed"
+          >
+            {school.description || "SMK Negeri 1 Beringin hadir sebagai sekolah kejuruan yang berfokus pada pengembangan kompetensi, karakter, kreativitas, dan kesiapan peserta didik menghadapi dunia kerja maupun pendidikan lanjutan."}
+          </p>
+          
+          <div ref={(el) => (textElementsRef.current[3] = el)}>
+            <Link 
+              href="/profil" 
+              className="inline-flex items-center gap-2 px-8 py-4 bg-[#1557a6] text-white rounded-xl font-bold hover:bg-[#0b2f63] transition-colors shadow-lg shadow-blue-500/30"
+            >
+              Selengkapnya <ArrowRight size={18} />
+            </Link>
           </div>
         </div>
-
       </div>
     </div>
   );

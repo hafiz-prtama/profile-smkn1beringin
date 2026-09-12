@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { MapPin, Phone, Mail, Instagram, Youtube, Facebook, ArrowUpRight } from "lucide-react";
 
 export default function Footer() {
@@ -8,7 +9,7 @@ export default function Footer() {
       <div className="container footer-grid">
         <div className="footer-about">
           <div className="footer-brand">
-            <img src="/logosmk.webp" alt="Logo sekolah" />
+            <Image src="/logosmk.webp" alt="Logo sekolah" width={44} height={44} />
             <div>
               <strong>SMK NEGERI 1 BERINGIN</strong>
               <span>Deli Serdang, Sumatera Utara</span>

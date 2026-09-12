@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { Menu, X } from "lucide-react";
 import RealTimeClock from "@/components/RealTimeClock";
 
@@ -188,7 +189,7 @@ export default function Navbar() {
 
         {/* ── Brand / Logo (Kiri) ── */}
         <Link href="/" className="brand" onClick={closeMenu}>
-          <img src="/logosmk.webp" alt="Logo SMK Negeri 1 Beringin" />
+          <Image src="/logosmk.webp" alt="Logo SMK Negeri 1 Beringin" width={40} height={40} priority />
           <div>
             <strong>SMKN 1 BERINGIN</strong>
             <span>DELI SERDANG</span>
@@ -219,7 +220,6 @@ export default function Navbar() {
                   onClick={(e) => handleNavClick(e, link)}
                 >
                   <span className="nav-link-text">{link.label}</span>
-                  <span className="nav-link-dot" aria-hidden="true" />
                 </Link>
               );
             })}
